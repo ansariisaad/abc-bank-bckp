@@ -1,10 +1,11 @@
-import { Component, OnInit ,ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { baseUrl, rejectSearch } from 'src/app/utils/api';
 import { response } from 'express';
 import { AlertService } from '../utils/aleartService';
+import { error } from 'console';
 // import DoneIcon from '@mui/icons-material/Done';
 
 @Component({
@@ -15,21 +16,24 @@ import { AlertService } from '../utils/aleartService';
 export class ListingPageComponent implements OnInit {
   // selectAllTick : boolean = false
   // rejectAllTick : boolean = true
-  tickBoxClick : boolean = true;
-  isChecked: boolean = false; 
+  cancelIcon = baseUrl + 'pending-list/reject'
+  rejectPost = baseUrl + 'rejectAll'
+  selectedIds: number[] = [];
+  rejectionReason: string = '';
+  tickBoxClick: boolean = true;
+  isChecked: boolean = false;
   showAdditionalColumns: boolean = false;
   tickBox: boolean = false;
   rejectAll: boolean = false;
   authorizeAll: boolean = false;
-  hideOnlyPending : boolean = false;
+  hideOnlyPending: boolean = false;
   // searchValue: string = '';
-  showOnlyPending : boolean = false ;
+  showOnlyPending: boolean = false;
   results: any[] = [];
   data: any[] = [];
   selectedOption: number = 0;
   searchValue: string = '';
   currentStatus: 'rejected' | 'pending' | 'review' | null = null;
-  
 
   onOptionChange() {
     console.log('Selected option:', this.selectedOption);
@@ -40,13 +44,14 @@ export class ListingPageComponent implements OnInit {
     console.log(`Status set to: ${status}`);
   }
 
-  
-
   searchParam = '';
   search() {
-      if (!this.currentStatus) {
-        this.alertService.showAlert('Error','Please select Any One Of This Reject, Pending, or Review first');
-          console.log('Please select Reject, Pending, or Review first');
+    if (!this.currentStatus) {
+      this.alertService.showAlert(
+        'Error',
+        'Please select Any One Of This Reject, Pending, or Review first'
+      );
+      console.log('Please select Reject, Pending, or Review first');
       return;
     }
 
@@ -55,47 +60,74 @@ export class ListingPageComponent implements OnInit {
       return;
     }
 
-    let selectedOption2 = this.selectedOption;
+    // let selectedOption2 = this.selectedOption;
 
     console.log(this.selectedOption, 'this.selectedOption');
     console.log(this.searchValue, 'this.searchValue');
 
     let apiUrl = '';
-    const baseUrl = 'http://167.172.220.75:8084/CashflowForecastingApplication/api/';
+    const baseUrls =
+      'http://167.172.220.75:8084/CashflowForecastingApplication/api/';
 
-    if (selectedOption2 === 0) {
-      this.searchParam = 'referenceNo';
+    // if (this.selectedOption === 0 * 1) {
+    //   console.log('0', '=============');
+    //   this.searchParam = 'referenceNo';
+    //   console.log(this.searchParam, 'this.searchParam');
+    // }
+    // if (this.selectedOption === 1 * 1) {
+    //   console.log('1', '=============');
+    //   this.searchParam = 'corporateCode';
+    //   console.log(this.searchParam, 'this.searchParam');
+    // }
+    // if (this.selectedOption === 2 * 1) {
+    //   console.log('2', '=============');
+    //   this.searchParam = 'corporateName';
+    //   console.log(this.searchParam, 'this.searchParam');
+    // }
+    // if (this.selectedOption === 3 * 1) {
+    //   console.log('3', '=============');
+    //   this.searchParam = 'forecastingAs';
+    //   console.log(this.searchParam, 'this.searchParam');
+    // }
+    // if (this.selectedOption === 4 * 1) {
+    //   console.log('4', '=============');
+    //   this.searchParam = 'entryType';
+    //   console.log(this.searchParam, 'this.searchParam');
+    // }
+
+    switch (this.selectedOption * 1) {
+      case 0:
+        this.searchParam = 'referenceNo';
+        break;
+      case 1:
+        this.searchParam = 'corporateCode';
+        break;
+      case 2:
+        this.searchParam = 'corporateName';
+        break;
+      case 3:
+        this.searchParam = 'forecastingAs';
+        break;
+      case 4:
+        this.searchParam = 'entryType';
+        break;
+      default:
+        this.searchParam = 'referenceNo';
     }
-    if (selectedOption2 === 1) {
-      this.searchParam = 'corporateCode';
-      console.log(this.searchValue , 'this.searchValue')
-    }
-    if (selectedOption2 === 2) {
-      this.searchParam = 'corporateName';
-      console.log(this.searchValue , 'this.searchValue')
-    }
-    if (selectedOption2 === 3) {
-      this.searchParam = 'forecastingAs';
-      console.log(this.searchValue , 'this.searchValue')
-    }
-    if (selectedOption2 === 4) {
-      this.searchParam = 'entryType';
-      console.log(this.searchValue , 'this.searchValue')
-    }
-    
-    console.log(this.searchParam,'this.searchParam11  ');
+
+    console.log(this.searchParam, 'this.searchParam11  ');
     if (this.currentStatus === 'rejected') {
       apiUrl =
-        baseUrl +
+        baseUrls +
         'rejected/search?' +
         this.searchParam +
         '=' +
         this.searchValue;
     }
     if (this.currentStatus === 'pending') {
-      console.log(this.searchParam,'this.searchParam222');
+      console.log(this.searchParam, 'this.searchParam222');
       apiUrl =
-        baseUrl +
+        baseUrls +
         'pending-list/search?' +
         this.searchParam +
         '=' +
@@ -103,7 +135,7 @@ export class ListingPageComponent implements OnInit {
     }
     if (this.currentStatus === 'review') {
       apiUrl =
-        baseUrl +
+        baseUrls +
         'review-list/search?' +
         this.searchParam +
         '=' +
@@ -119,7 +151,7 @@ export class ListingPageComponent implements OnInit {
         if (response.code === 200 && response.data && response.data.content) {
           this.results = response.data.content;
         } else {
-          this.alertService.showAlert('Error' ,'Data Not Found');
+          this.alertService.showAlert('Error', 'Data Not Found');
           console.error(
             'No data found or error in response:',
             response.message
@@ -136,9 +168,9 @@ export class ListingPageComponent implements OnInit {
   }
 
   // button
-  rejectBtn() { 
+  rejectBtn() {
     this.showOnlyPending = false;
-    this.hideOnlyPending = true
+    this.hideOnlyPending = true;
     this.rejectAll = false;
     this.showAdditionalColumns = false;
     this.authorizeAll = false;
@@ -151,7 +183,7 @@ export class ListingPageComponent implements OnInit {
     console.log('Flag value:', this.showAdditionalColumns);
   }
 
-  reviewBtn() { 
+  reviewBtn() {
     this.showOnlyPending = false;
     this.hideOnlyPending = true;
     this.showAdditionalColumns = false;
@@ -165,10 +197,10 @@ export class ListingPageComponent implements OnInit {
   }
 
   pendingBtn() {
-    this.hideOnlyPending = false
+    this.hideOnlyPending = false;
     console.log(this.selectedOption, 'selectedOption');
     this.showOnlyPending = true;
-    this.pendingBtnApi(); 
+    this.pendingBtnApi();
     this.rejectAll = true;
     this.authorizeAll = true;
     this.showAdditionalColumns = false;
@@ -179,55 +211,81 @@ export class ListingPageComponent implements OnInit {
   }
   // checkbox auto click
 
-  toggleCheckbox(event: Event, source: 'header' | 'cell'): void {
-    const checkbox = event.target as HTMLInputElement;
-    const checked = checkbox.checked;
+  checkedItems: boolean[] = []; // Array to store the checked status of individual checkboxes
 
-    if (source === 'header') {
-      this.isChecked = checked;
-    } else if (source === 'cell') {
-    }
+  rejectIDS: any = [];
+  // Method to toggle checkboxes
+  fetchResults() {
+    
+    this.http.get<any[]>('your-api-endpoint').subscribe(data => {
+      this.results = data;
+      this.checkedItems = new Array(data.length).fill(false); // Initialize checkbox states
+    });
   }
 
+  toggleCheckbox(event: Event, id: number): void {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    console.log(`Checkbox ${isChecked ? 'checked' : 'unchecked'} for ID: ${id}`);
+    
+    if (isChecked) {
+      this.selectedIds.push(id);
+    } else {
+      const index = this.selectedIds.indexOf(id);
+      if (index > -1) {
+        this.selectedIds.splice(index, 1);
+      }
+    }
+  }
   
 
-  constructor(private http: HttpClient,private alertService: AlertService) {}
+  toggleHeaderCheckbox(event: Event): void {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    this.isChecked = isChecked;
+    this.checkedItems = new Array(this.results.length).fill(isChecked);
+  }
+
+
+
+  // Initialize the checkedItems array based on the length of results
+
+  constructor(private http: HttpClient, private alertService: AlertService ) {}
 
   allData: any[] = [];
 
-  ngOnInit(){
-    this.pendingBtnUrl()
+  ngOnInit() {
+    this.checkedItems = this.results.map(() => false);
+    this.pendingBtnUrl();
     throw new Error('Method not implemented.');
-
   }
 
   pendingBtnUrl(): void {
-    this.http.get<any>( baseUrl + 'pending-list')
-      .subscribe({
-        next: (result) => {
-          if (result && result.data && result.data.content) {
-            this.results = result.data.content; // Adjust according to the actual response structure
-          } else {
-            console.error('Unexpected API response structure', result);
-          }
-        },
-        error: (error) => {
-          console.error('Error fetching data', error);
+    this.http.get<any>(baseUrl + 'pending-list').subscribe({
+      next: (result) => {
+        if (result && result.data && result.data.content) {
+          this.results = result.data.content; // Adjust according to the actual response structure
+        } else {
+          console.error('Unexpected API response structure', result);
         }
-      });
+      },
+      error: (error) => {
+        console.error('Error fetching data', error);
+      },
+    });
   }
 
-  // manual show the pending url 
-  
+  view(id: any) {
+    localStorage.setItem('reviewID', id);
+    console.log(`View button clicked for ID: ${id}`);
+  }
 
-
+  // manual show the pending url
 
   // url for api
-  private pendingBtnUrls = baseUrl + 'pending-list';
-  private reviewBtnUrl = baseUrl +'review-list';
-  private rejectBtnUrl = baseUrl +'rejected';
+  private pendingBtnUrls = baseUrl + 'pending-list' + '?size=50';
+  private reviewBtnUrl = baseUrl + 'review-list' + '?size=50';
+  private rejectBtnUrl = baseUrl + 'rejected' + '?size=50';
 
-    pendingBtnApi(): void {
+  pendingBtnApi(): void {
     this.loadPendingData().subscribe(
       (response) => {
         console.log('API Response:', response); // Debug statement
@@ -237,7 +295,6 @@ export class ListingPageComponent implements OnInit {
         console.error('Search request failed', error);
       }
     );
-    
   }
 
   rejectBtnApi(): void {
@@ -286,29 +343,113 @@ export class ListingPageComponent implements OnInit {
     return this.http.get<any>(this.reviewBtnUrl).pipe(
       catchError((error) => {
         console.error('Review request failed', error);
-        return of({ data: [] }); // Return an empty result on error
+        return of({ data: [] }); 
       })
     );
   }
 
-
-
   // popyp rejectAllbtn api
   isPopupVisible = false;
   inputValue = '';
+  isDialogVisible =false
 
   showPopup() {
     this.isPopupVisible = true;
   }
-
-  onConfirm() {
-    // Handle confirm action
-    console.log('Confirmed with:', this.inputValue);
-    this.isPopupVisible = false;
+  showPopup1() {
+    this.isPopupVisible = true;
   }
+  
 
   onCancel() {
     // Handle cancel action
     this.isPopupVisible = false;
   }
+
+  onCancel1() {
+    // Handle cancel action
+    this.isPopupVisible = false;
+  }
+  
+  onConfirm1(){
+    console.log('Confirmed with:', this.inputValue);
+    this.isPopupVisible = false;
+
+    this.http.post<any>(this.cancelIcon, {
+      ids: this.selectedIds,
+      rejectionReason: this.rejectionReason,
+    }).subscribe(
+      response => {
+        this.alertService.showAlert(
+          'success',
+          'Your Data is Verified To Reject'
+        );
+        console.log('Response:', response);
+      },
+      error => {
+        console.error('Error:', error);
+      }
+    );
+
+  }
+
+  // rejectionReason : string = ''
+  onConfirm() {
+    console.log('Confirmed with:', this.inputValue);
+    this.isPopupVisible = false;
+    // api
+    this.http.post<any>(this.rejectPost, {
+      ids: this.selectedIds,
+      rejectionReason: this.rejectionReason,
+    }).subscribe(
+      response => {
+        this.alertService.showAlert(
+          'success',
+          'Your Data is Verified To Reject'
+        );
+        console.log('Response:', response);
+      },
+      error => {
+        console.error('Error:', error);
+      }
+    );
+  }
+
+
+  authorizeBtn(){
+    this.http.post(
+      baseUrl + 'pending/authorizeAll' , null, 
+    ).subscribe(
+      response => {
+        this.alertService.showAlert(
+          'success',
+          'Your Data is Verified To authorize'
+        );
+        console.log('Response:', response);
+      },
+      error => {
+        console.error('Error:', error);
+      }
+    );
+  }
+
+
+  rightIconApi(){
+    this.http.post( baseUrl + 'pending-list/authorize/' + this.selectedIds , null,).subscribe(
+      response => {
+        this.alertService.showAlert(
+          'success',
+          'Your Data is Ready To Review'
+        );
+        console.log('Response:', response);
+      },
+      error => {
+        console.error('Error:', error);
+      }
+    )
+  }
+
 }
+
+
+ 

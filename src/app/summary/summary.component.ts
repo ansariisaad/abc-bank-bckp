@@ -1,6 +1,5 @@
 import { Component, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { Chart } from 'chart.js/auto';
-// import { hostport } from 'src/app/utils/api'; 
 import { baseUrl } from '../utils/api';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -66,18 +65,26 @@ export class SummaryComponent implements AfterViewInit {
   }
 
   private fetchYearlySummary(accountNumber: string) {
-    const yearlySummaryUrl = `${baseUrl}transactions/yearly-summary?accountNumber=${accountNumber}`;
-
+    const yearlySummaryUrl = `http://192.168.1.19:8080/api/transactions/custom-range-summary?accountNumber=${accountNumber}&startDate=2024-09-01&endDate=2024-11-02`;
+//
+//  const yearlySummaryUrl = `${hostport}api/transactions/yearly-summary?accountNumber=${accountNumber}`;
     this.http.get(yearlySummaryUrl).subscribe(
       (response: any) => {
+        console.log('Yearly Summary Response:', response);
+
         if (response.code === 200 && response.status === 'success') {
           this.yearlySummary[accountNumber] = response.data;  
           console.log('Yearly Summary:', this.yearlySummary);
 
+          // Find the account in the accounts array
           const account = this.accounts.find(acc => acc.accountNumber === accountNumber);
+          
+          // Check if the account exists and assign the balances
           if (account) {
-            account.yearlyOpeningBalance = response.data.yearlyOpeningBalance;
-            account.yearlyClosingBalance = response.data.yearlyClosingBalance;
+            account.yearlyOpeningBalance = response.data.openingBalance;  // Access the opening balance
+            account.yearlyClosingBalance = response.data.closingBalance;  // Access the closing balance
+            console.log('Opening Balance:', account.yearlyOpeningBalance);
+            console.log('Closing Balance:', account.yearlyClosingBalance);
           }
         } else {
           this.error = response.message || 'No yearly summary data found.';
@@ -90,8 +97,9 @@ export class SummaryComponent implements AfterViewInit {
     );
   }
 
+
   private buildUrl(): string {
-    let url = `${baseUrl}accounts/search?`;
+    let url = `${baseUrl}api/accounts/search?`;
     console.log('searchValue', this.searchValue);
     this.selectedOption = Number(this.selectedOption);
 

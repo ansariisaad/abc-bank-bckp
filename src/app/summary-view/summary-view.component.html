@@ -1,153 +1,128 @@
-<!-- Content -->
-
-<div class="container">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* Add your styles here */
+    .container { /* Your styles */ }
+    .header { /* Your styles */ }
+    .summary-button { /* Your styles */ }
+    .info-box { /* Your styles */ }
+    .info-item { /* Your styles */ }
+    .action-icons { /* Your styles */ }
+    .favorite-button { /* Your styles */ }
+    .download-button { /* Your styles */ }
+    .toggle-buttons { /* Your styles */ }
+    .transaction-table { /* Your styles */ }
+    .removed-transaction-table { /* Your styles */ }
+  </style>
+</head>
+<body>
+  <div class="container">
     <div class="header">
-      <h2>Cash Forecasting Summary</h2>
+      <h2>Cash Forecasting Summary Details</h2>
       <button class="summary-button">VIEW SUMMARY</button>
     </div>
+
     <div class="info-box">
       <div class="info-item">
-        <p><strong>CIF ID:</strong> 1008344</p>
-        <p><strong>Opening Balance:</strong> 45,000.00 INR</p>
-        <p><strong>Statement Start Date:</strong> 01-Jul-2024</p>
+        <p><strong>CIF ID:</strong> {{ accountSummary.cifId }}</p>
+        <p><strong>Opening Balance (INR):</strong> {{ accountSummary.openingBalance }}</p>
+        <p><strong>Statement Start Date:</strong> {{ accountSummary.startDate }}</p>
       </div>
       <div class="info-item">
-        <p><strong>Corporate Name:</strong> XYZ Corp Ltd</p>
-        <p><strong>Closing Balance:</strong> 113,377.00 INR</p>
-        <p><strong>End Date:</strong> 31-Jul-2024</p>
+        <p><strong>Corporate Name:</strong> {{ accountSummary.corporateName }}</p>
+        <p><strong>Closing Balance (INR):</strong> {{ accountSummary.closingBalance }}</p>
+        <p><strong>End Date:</strong> {{ accountSummary.endDate }}</p>
       </div>
       <div class="info-item">
-        <p><strong>Account No/IBAN:</strong> JAE81123456789021189021</p>
-        <p><strong>OD Limit:</strong> 30,000.00 INR</p>
+        <p><strong>Account No/IBAN:</strong> {{ accountSummary.accountNumber }}</p>
+        <p><strong>OD Limit (INR):</strong> {{ accountSummary.odLimit }}</p>
       </div>
     </div>
+
     <div class="action-icons">
-      <button class="favorite-button" title="Favorite">⭐</button>
-      <button class="download-button" title="Download">⬇️</button>
+      <!-- <button class="favorite-button" title="Favorite">⭐</button> -->
+      <button class="download-button" title="Download"><i class="fa-solid fa-download" aria-hidden="true"></i></button>
     </div>
-    <table class="transaction-table">
+
+    <!-- Toggle Button -->
+    <div class="toggle-buttons">
+      <button (click)="showTransactions()" [class.active]="showingTransactions">Show Transactions</button>
+      <button (click)="showRemovedTransactions()" [class.active]="!showingTransactions">Show Removed Transactions</button>
+    </div>
+
+    <!-- Table for Transactions -->
+    <table class="transaction-table" *ngIf="showingTransactions">
       <thead>
         <tr>
           <th>Source</th>
           <th>Value Date</th>
-          <th>Transaction narration</th>
+          <th>Transaction Narration</th>
           <th>Beneficiary/Payers</th>
-          <th>Withdrawals(NIR)</th>
-          <th>Deposit(NIR)</th>
-          <th>Balance(NIR)</th>
-          <th>Link</th>
+          <th>Withdrawals (INR)</th>
+          <th>Deposit (INR)</th>
+          <th>Balance (INR)</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr class="highlight">
-          <td>Opening Balance</td>
-          <td>01-Jul-2024</td>
-          <td></td>
-          <td></td>
-          <td>-45,000.00</td>
-          <td>31,000.00</td>
-          <td>-14,000.00</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>Payment</td>
-          <td>03-Jul-2024</td>
-          <td>Vendor Payment</td>
-          <td>XYZ Suppliers</td>
-          <td>-12,500.00</td>
-          <td>0.00</td>
-          <td>-26,500.00</td>
-          <td><a href="javascript:void(0)">View</a></td>
-        </tr>
-        <tr>
-          <td>Deposit</td>
-          <td>05-Jul-2024</td>
-          <td>Customer Payment</td>
-          <td>ABC Corp</td>
-          <td>0.00</td>
-          <td>18,000.00</td>
-          <td>-8,500.00</td>
-          <td><a href="javascript:void(0)">View</a></td>
-        </tr>
-        <tr>
-          <td>Withdrawal</td>
-          <td>10-Jul-2024</td>
-          <td>Office Rent</td>
-          <td>Real Estate Ltd</td>
-          <td>-7,500.00</td>
-          <td>0.00</td>
-          <td>-16,000.00</td>
-          <td><a href="javascript:void(0)">View</a></td>
-        </tr>
-        <tr>
-          <td>Deposit</td>
-          <td>15-Jul-2024</td>
-          <td>Sale of Goods</td>
-          <td>DEF Corp</td>
-          <td>0.00</td>
-          <td>25,000.00</td>
-          <td>9,000.00</td>
-          <td><a href="javascript:void(0)">View</a></td>
-        </tr>
-        <tr>
-          <td>Payment</td>
-          <td>20-Jul-2024</td>
-          <td>Loan Repayment</td>
-          <td>Bank XYZ</td>
-          <td>-30,000.00</td>
-          <td>0.00</td>
-          <td>-21,000.00</td>
-          <td><a href="javascript:void(0)">View</a></td>
-        </tr>
-        <tr>
-          <td>Deposit</td>
-          <td>25-Jul-2024</td>
-          <td>Consultancy Fees</td>
-          <td>GHI Consultants</td>
-          <td>0.00</td>
-          <td>22,000.00</td>
-          <td>1,000.00</td>
-          <td><a href="javascript:void(0)">View</a></td>
-        </tr>
-        <tr>
-          <td>Closing Balance</td>
-          <td>31-Jul-2024</td>
-          <td></td>
-          <td></td>
-          <td>0.00</td>
-          <td>0.00</td>
-          <td>-113,377.00</td>
-          <td></td>
+        <tr *ngFor="let transaction of transactionList">
+          <td>{{ transaction.source }}</td>
+          <td>{{ transaction.valueDate | date }}</td>
+          <td>{{ transaction.narration }}</td>
+          <td>{{ transaction.beneficiaryPayers }}</td>
+          <td>{{ transaction.withdrawals }}</td>
+          <td>{{ transaction.deposits }}</td>
+          <td>{{ transaction.balance || 'N/A' }}</td>
+          <td>
+            <div class="menu">
+              <button (click)="toggleMenu(transaction.id)" class="menu-button">...</button>
+              <div *ngIf="selectedTransactionId === transaction.id" class="menu-options">
+                <button (click)="editTransaction(transaction)">Edit this occurrence</button>
+                <button (click)="modifyTransaction(transaction)">Modify this occurrence</button>
+                <button (click)="deleteTransaction(transaction)">Delete permanently</button>
+                <button (click)="ignoreTransaction(transaction)">Ignore this occurrence for now</button>
+              </div>
+            </div>
+          </td>
         </tr>
       </tbody>
     </table>
-    <div class="remove-transaction">
-      <table>
-        <thead>
-          <tr>
-            <th>Source</th>
-            <th>Value Date</th>
-            <th>Transaction narration</th>
-            <th>Beneficiary/Payers</th>
-            <th>Withdrawals(NIR)</th>
-            <th>Deposit(NIR)</th>
-            <th>Balance(NIR)</th>
-            <th>Link</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Payment</td>
-            <td>06-Jul-2024</td>
-            <td>Invoice Finance EMI</td>
-            <td>Mr. ABC</td>
-            <td>-15,000</td>
-            <td>12,000</td>
-            <td>-3,000</td>
-            <td><button class="undo-button">Undo</button></td>
-          </tr>
-        </tbody>
-      </table>
-      <button class="back-button">BACK</button>
-    </div>
+
+    <!-- Table for Removed Transactions -->
+    <table class="removed-transaction-table" *ngIf="!showingTransactions">
+      <thead>
+        <tr>
+          <th>Source</th>
+          <th>Value Date</th>
+          <th>Transaction Narration</th>
+          <th>Beneficiary/Payers</th>
+          <th>Withdrawals (INR)</th>
+          <th>Deposit (INR)</th>
+          <th>Balance (INR)</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let removedTransaction of removedTransactions">
+          <td>{{ removedTransaction.source }}</td>
+          <td>{{ removedTransaction.valueDate | date }}</td>
+          <td>{{ removedTransaction.narration }}</td>
+          <td>{{ removedTransaction.beneficiaryPayers }}</td>
+          <td>{{ removedTransaction.withdrawals }}</td>
+          <td>{{ removedTransaction.deposits }}</td>
+          <td>{{ removedTransaction.balance || 'N/A' }}</td>
+          <td>
+            <button (click)="restoreTransaction(removedTransaction)">Restore</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
+</body>
+</html>

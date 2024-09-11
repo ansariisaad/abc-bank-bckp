@@ -110,6 +110,26 @@ body {
   left: 0;
   margin-top: 0.5rem; /* Add space between input and calendar */
 }
+/* Custom scrollbar for webkit browsers (Chrome, Safari, Edge) */
+.scrollable-content::-webkit-scrollbar {
+  width: 6px; /* Thin scrollbar */
+}
+
+/* Track of the scrollbar */
+.scrollable-content::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Light grey background for track */
+}
+
+/* Handle of the scrollbar */
+.scrollable-content::-webkit-scrollbar-thumb {
+  background: #888; /* Dark grey handle */
+  border-radius: 10px; /* Rounded scrollbar handle */
+}
+
+/* Handle hover effect */
+.scrollable-content::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Darker grey on hover */
+}
 
 .container-xxl .row {
   display: flex;
@@ -135,7 +155,9 @@ body {
 .container-xxl .card-container {
   flex: 1;
 }
-
+.balance-item{
+  margin-left: 100px;
+}
 .summary {
   display: flex;
   flex-direction: column;
@@ -238,6 +260,8 @@ hr.thin-line {
 .card-info p {
   margin: 0;
   color: #999;
+  font-size: 12px;
+  text-align: center;
 }
 
 .badge {

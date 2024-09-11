@@ -27,11 +27,9 @@
             </div>
 
             <div class="container-xxl">
-              
               <h2 style="padding-top: 20px">Cashflow Forecast-summary</h2>
-              <div class="container-box-wrapper"  >
-                <div class="row gy-4 mb-4 d-flex container-box" >
-                 
+              <div class="container-box-wrapper">
+                <div class="row gy-4 mb-4 d-flex container-box">
                   <section
                     class="col-xl-3 col-md-5 col-sm-6 d-flex align-items-stretch"
                     id="cashflow"
@@ -87,8 +85,8 @@
                       </div>
                     </div>
                   </section>
-
                   <!-- Cashflow Overview Card -->
+
                   <div
                     class="col-xl-2 col-md-3 col-sm-6 d-flex align-items-stretch"
                   >
@@ -99,12 +97,14 @@
                         class="card-body d-flex flex-column justify-content-between"
                       >
                         <div class="card-info">
-                          <!-- Changed h5 to h6 -->
                           <h6 style="font-weight: bold">AED 10,600</h6>
-
-                          <p>Total Cash Inflow</p>
-                          <div class="badge bg-label-secondary rounded-pill">
-                            Last 4 Months
+                          <div style="margin-top: -10px">
+                            <p style="margin-bottom: 3px">Total Cash Inflow</p>
+                            <!-- Insert Red Arrow Image -->
+                            <!-- <img src="/src/assets/img/arrow/decrease.PNG" alt="Cash Outflow" style="width: 30px; height: auto;" /> -->
+                            <div class="badge bg-label-secondary rounded-pill">
+                              Last 4 Months
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -123,10 +123,13 @@
                       >
                         <div class="card-info">
                           <h6 style="font-weight: bold">AED 22,500</h6>
-                          <!-- <h5>AED 22,500</h5> -->
-                          <p>Total Cash Outflow</p>
-                          <div class="badge bg-label-secondary rounded-pill">
-                            Last 4 Months
+                          <div style="margin-top: -10px">
+                            <p style="margin-bottom: 3px">Total Cash Outflow</p>
+                            <!-- Insert Red Arrow Image -->
+                            <!-- <img src="/src/assets/img/arrow/decrease.PNG" alt="Cash Outflow" style="width: 30px; height: auto;" /> -->
+                            <div class="badge bg-label-secondary rounded-pill">
+                              Last 4 Months
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -144,12 +147,15 @@
                         class="card-body d-flex flex-column justify-content-between"
                       >
                         <div class="card-info">
-                          <!-- <h5>AED 83,500</h5> -->
                           <h6 style="font-weight: bold">AED 83,500</h6>
+                          <div style="margin-top: -10px">
+                            <p style="margin-bottom: 3px">Net Cashflow</p>
 
-                          <p>Net Cashflow</p>
-                          <div class="badge bg-label-secondary rounded-pill">
-                            Last 4 Months
+                            <!-- Insert Neutral or Specific Arrow Image -->
+                            <!-- <img src="/src/assets/increase.png" alt="Net Cashflow" style="width: 30px; height: auto;" /> -->
+                            <div class="badge bg-label-secondary rounded-pill">
+                              Last 4 Months
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -166,19 +172,32 @@
                       <div
                         class="card-body d-flex flex-column justify-content-between"
                       >
-                        <div class="card-info mt-4 pt-1 scrollable-content">
-                          <!-- <h5>Insights</h5> -->
+                        <div class="card-info">
+                          <!-- Fixed title at the top -->
                           <h6 style="font-weight: bold">Insights</h6>
 
-                          <p>
-                            AE611235566565656-AED Account Has High Cashflow for
-                            OCT 2021
-                          </p>
-                          <p>
-                            AE611235564564546-AED Account Has Low Cashflow for
-                            OCT 2021
-                          </p>
+                          <!-- Scrollable content with thin scrollbar -->
 
+                          <div
+                            class="scrollable-content"
+                            style="
+                              max-height: 100px;
+                              overflow-y: auto;
+                              padding-right: 10px;
+                            "
+                          >
+                            <p>
+                              AE611235566565656-AED Account Has High Cashflow
+                              for OCT 2021
+                            </p>
+                            <p>
+                              AE611235564564546-AED Account Has Low Cashflow for
+                              OCT 2021
+                            </p>
+                            <!-- Add more paragraphs if needed -->
+                          </div>
+
+                          <!-- Fixed badge at the bottom -->
                           <div class="badge bg-label-secondary rounded-pill">
                             DEC 2021
                           </div>
@@ -186,234 +205,307 @@
                       </div>
                     </div>
                   </div>
+
+                  <div class="row" id="detail-container">
+                    <!-- Forecast Period Calendar Selector -->
+                    <div class="col-xl-3" id="card">
+                      <div class="h-70">
+                        <div class="card-body text-nowrap">
+                          <!-- Forecast Period Heading -->
+                          <h6
+                            class="card-title mb-1 d-flex gap-2 flex-wrap"
+                            style="font-weight: bold"
+                          >
+                            Forecast Period
+                          </h6>
+
+                          <!-- Calendar Selector -->
+                          <div class="mb-3">
+                            <label for="forecast-calendar" class="form-label"
+                              >Select Date</label
+                            >
+                            <input
+                              type="date"
+                              id="forecast-calendar"
+                              class="form-control"
+                              (change)="onDateChange($event)"
+                            />
+                          </div>
+
+                          <!-- Display Forecast Period -->
+                          <div id="forecast-period" class="mt-3">
+                            <h5>Select Period:</h5>
+                            <p>{{ forecastPeriod }}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Donut Chart 1 -->
+                    <div class="col-xl-3">
+                      <div class="h-100" id="card">
+                        <div
+                          class="card-header d-flex align-items-center justify-content-between"
+                        >
+                          <div>
+                            <!-- <h5 class="card-title mb-0">Cash inflow distribution</h5> -->
+
+                            <h6
+                              class="card-title mb-0"
+                              style="font-weight: bold"
+                            >
+                              Cash inflow distribution
+                            </h6>
+
+                            <!-- <small class="text-muted">Spending on various categories</small> -->
+                          </div>
+                          <div class="dropdown d-none d-sm-flex">
+                            <button
+                              type="button"
+                              class="btn dropdown-toggle px-0"
+                              data-bs-toggle="dropdown"
+                              aria-expanded="false"
+                            >
+                              <i class="mdi mdi-calendar-month-outline"></i>
+                            </button>
+                          </div>
+                        </div>
+                        <div class="card-body">
+                          <canvas id="donutChart1"></canvas>
+                          <div id="deliveryExceptionsChart"></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Donut Chart 2 -->
+                    <div class="col-xl-3">
+                      <div class="h-100" id="card">
+                        <div
+                          class="card-header d-flex align-items-center justify-content-between"
+                        >
+                          <div>
+                            <h6
+                              class="card-title mb-0"
+                              style="font-weight: bold"
+                            >
+                              Cash Outflow Distribution
+                            </h6>
+                          </div>
+                          <div class="dropdown d-none d-sm-flex">
+                            <button
+                              type="button"
+                              class="btn dropdown-toggle px-0"
+                              data-bs-toggle="dropdown"
+                              aria-expanded="false"
+                            >
+                              <i class="mdi mdi-calendar-month-outline"></i>
+                            </button>
+                          </div>
+                        </div>
+                        <div class="card-body">
+                          <canvas id="donutChart2"></canvas>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="col-xl-3">
+                      <div class="h-100 text-center" id="quick-action">
+                        <div
+                          class="card-body d-flex flex-column justify-content-center align-items-center"
+                        >
+                          <h6
+                            class="card-title"
+                            style="font-weight: bold; margin-top: -57px"
+                          >
+                            Quick Actions
+                          </h6>
+
+                          <ul
+                            class="list-unstyled"
+                            style="
+                              color: #009999;
+                              text-align: left;
+                              padding-left: 0;
+                            "
+                          >
+                            <li>
+                              <a
+                                href="#"
+                                style="
+                                  color: #009999;
+                                  text-decoration: underline;
+                                "
+                                >Book Forward Contract</a
+                              >
+                            </li>
+                            <li>
+                              <a
+                                href="#"
+                                style="
+                                  color: #009999;
+                                  text-decoration: underline;
+                                "
+                                >Start SIP</a
+                              >
+                            </li>
+                            <li>
+                              <a
+                                href="#"
+                                style="
+                                  color: #009999;
+                                  text-decoration: underline;
+                                "
+                                >Book Recurring Deposits</a
+                              >
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mt-4">
+                    <!-- Search and Filter -->
+                    <div class="row mb-3 align-items-center">
+                      <!-- Left side: Account (9) -->
+                      <div class="col-md-6 text-start">
+                        <span class="account-display"
+                          >Account ({{ accounts.length }})</span
+                        >
+                      </div>
+
+                      <!-- Right side: Search Field -->
+                      <!-- Right side: Search Field -->
+                      <div class="col-md-6 d-flex justify-content-end">
+                        <!-- Search Form -->
+                        <div class="input-group">
+                          <!-- Dropdown -->
+                          <select
+                            [(ngModel)]="selectedOption"
+                            (ngModelChange)="onOptionChange()"
+                            name="searchOption"
+                            class="form-select"
+                            aria-label="Search By"
+                          >
+                            <option [value]="0">Please select</option>
+                            <option [value]="1">Account Number</option>
+                            <option [value]="2">Account Title</option>
+                          </select>
+
+                          <!-- Search Input -->
+                          <input
+                            type="text"
+                            [(ngModel)]="searchValue"
+                            name="searchValue"
+                            class="search-value"
+                            placeholder="Enter Search Value"
+                            aria-label="Search Value"
+                          />
+
+                          <!-- Search Button -->
+                          <button
+                            class="btn btn-primary"
+                            (click)="search()"
+                            type="button"
+                          >
+                            <i class="mdi mdi-magnify"></i> Search
+                          </button>
+                        </div>
+                      </div>
+
+                      <!-- Account Cards Section -->
+                      <div class="account-grid" id="account-card">
+                        <!-- Display loading or error message -->
+                        <div *ngIf="loading" class="text-center">
+                          Loading accounts...
+                        </div>
+                        <div *ngIf="error" class="text-danger">{{ error }}</div>
+
+                        <!-- Repeat this block for each account -->
+                        <div
+                          *ngFor="let account of accounts"
+                          class="account-card"
+                        >
+                          <div
+                            class="account-header d-flex align-items-center justify-content-between"
+                          >
+                            <h5 class="mb-0">
+                              Account Number: {{ account.accountNumber }}
+                            </h5>
+                            <div class="account-balances">
+                              <span class="balance-item"
+                                >Opening Balance:<b>
+                                  {{
+                                    account.yearlyOpeningBalance
+                                      | currency : "INR"
+                                  }}</b
+                                ></span
+                              >
+                              <span class="balance-item"
+                                >Closing Balance:<b>
+                                  {{
+                                    account.yearlyClosingBalance
+                                      | currency : "INR"
+                                  }}</b
+                                ></span
+                              >
+                            </div>
+                            <button
+                              class="btn btn-primary waves-effect waves-light"
+                              style="margin-right: -20px"
+                              (click)="toggleTable(account)"
+                            >
+                              View Details
+                            </button>
+                          </div>
+
+                          <!-- Table for Monthly Balances -->
+                          <div
+                            *ngIf="account.showTable"
+                            class="monthly-balances"
+                          >
+                            <table class="table table-bordered table-striped">
+                              <thead>
+                                <tr>
+                                  <th>Month</th>
+                                  <th>Opening Balance</th>
+                                  <th>Closing Balance</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr
+                                  *ngFor="
+                                    let month of yearlySummary[
+                                      account.accountNumber
+                                    ]?.monthlySummaries
+                                  "
+                                >
+                                  <td>{{ month.month }} {{ month.year }}</td>
+                                  <td>
+                                    {{
+                                      month.openingBalance | currency : "INR"
+                                    }}
+                                  </td>
+                                  <td>
+                                    {{
+                                      month.closingBalance | currency : "INR"
+                                    }}
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            
-
-              <div class="row" id="detail-container">
-                <!-- Forecast Period Calendar Selector -->
-                <div class="col-xl-3" id="card">
-                  <div class=" h-70">
-                    <div class="card-body text-nowrap">
-                      <!-- Forecast Period Heading -->
-                      <h6
-                        class="card-title mb-1 d-flex gap-2 flex-wrap"
-                        style="font-weight: bold"
-                      >
-                        Forecast Period
-                      </h6>
-
-                      <!-- Calendar Selector -->
-                      <div class="mb-3">
-                        <label for="forecast-calendar" class="form-label"
-                          >Select Date</label
-                        >
-                        <input
-                          type="date"
-                          id="forecast-calendar"
-                          class="form-control"
-                          (change)="onDateChange($event)"
-                        />
-                      </div>
-
-                      <!-- Display Forecast Period -->
-                      <div id="forecast-period" class="mt-3">
-                        <h5>Select Period:</h5>
-                        <p>{{ forecastPeriod }}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Donut Chart 1 -->
-                <div class="col-xl-3">
-                  <div class=" h-100" id="card">
-                    <div
-                      class="card-header d-flex align-items-center justify-content-between"
-                    >
-                      <div>
-                        <!-- <h5 class="card-title mb-0">Cash inflow distribution</h5> -->
-
-                        <h6 class="card-title mb-0" style="font-weight: bold">
-                          Cash inflow distribution
-                        </h6>
-
-                        <!-- <small class="text-muted">Spending on various categories</small> -->
-                      </div>
-                      <div class="dropdown d-none d-sm-flex">
-                        <button
-                          type="button"
-                          class="btn dropdown-toggle px-0"
-                          data-bs-toggle="dropdown"
-                          aria-expanded="false"
-                        >
-                          <i class="mdi mdi-calendar-month-outline"></i>
-                        </button>
-                      </div>
-                    </div>
-                    <div class="card-body">
-                      <canvas id="donutChart1"></canvas>
-                      <div id="deliveryExceptionsChart"></div>
-                    </div>
-                  
-                  </div>
-                </div>
-
-                <!-- Donut Chart 2 -->
-                <div class="col-xl-3">
-                  <div class="h-100" id="card">
-                    <div
-                      class="card-header d-flex align-items-center justify-content-between"
-                    >
-                      <div>
-                        <h6 class="card-title mb-0" style="font-weight: bold">
-                          Cash Outflow Distribution
-                        </h6>
-                      </div>
-                      <div class="dropdown d-none d-sm-flex">
-                        <button
-                          type="button"
-                          class="btn dropdown-toggle px-0"
-                          data-bs-toggle="dropdown"
-                          aria-expanded="false"
-                        >
-                          <i class="mdi mdi-calendar-month-outline"></i>
-                        </button>
-                      </div>
-                    </div>
-                    <div class="card-body">
-                      <canvas id="donutChart2"></canvas>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Quick Actions -->
-                <div class="col-xl-3">
-                  <div class=" h-100 text-center" id="quick-action">
-                    <div
-                      class="card-body d-flex flex-column justify-content-center align-items-center"
-                    >
-                      <h6
-                        class="card-title"
-                        style="font-weight: bold; margin-top: -57px"
-                      >
-                        Quick Actions
-                      </h6>
-
-                      <ul
-                        class="list-unstyled"
-                        style="
-                          color: #009999;
-                          text-align: left;
-                          padding-left: 0;
-                        "
-                      >
-                        <li>
-                          <a
-                            href="#"
-                            style="color: #009999; text-decoration: underline"
-                            >Book Forward Contract</a
-                          >
-                        </li>
-                        <li>
-                          <a
-                            href="#"
-                            style="color: #009999; text-decoration: underline"
-                            >Start SIP</a
-                          >
-                        </li>
-                        <li>
-                          <a
-                            href="#"
-                            style="color: #009999; text-decoration: underline"
-                            >Book Recurring Deposits</a
-                          >
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                </div>
-
-                <div class="mt-4">
-                  <!-- Search and Filter -->
-                  <div class="row mb-3 align-items-center">
-                    <!-- Left side: Account (9) -->
-                    <div class="col-md-6 text-start">
-                      <span class="account-display">Account ({{ accounts.length }})</span>
-                    </div>
-                
-                 <!-- Right side: Search Field -->
-<!-- Right side: Search Field -->
-<div class="col-md-6 d-flex justify-content-end">
-  <!-- Search Form -->
-  <div class="input-group">
-    <!-- Dropdown -->
-    <select [(ngModel)]="selectedOption" (ngModelChange)="onOptionChange()" name="searchOption" class="form-select" aria-label="Search By">
-      <option [value]="0">Please select</option>
-      <option [value]="1">Account Number</option>
-      <option [value]="2">Account Title</option>
-    </select>
-
-    <!-- Search Input -->
-    <input type="text" [(ngModel)]="searchValue" name="searchValue" class="search-value" placeholder="Enter Search Value" aria-label="Search Value" />
-
-    <!-- Search Button -->
-    <button class="btn btn-primary" (click)="search()" type="button">
-      <i class="mdi mdi-magnify"></i> Search
-    </button>
-  </div>
-</div>
-
-<!-- Account Cards Section -->
-<div class="account-grid" id="account-card">
-  <!-- Display loading or error message -->
-  <div *ngIf="loading" class="text-center">Loading accounts...</div>
-  <div *ngIf="error" class="text-danger">{{ error }}</div>
-
-  <!-- Repeat this block for each account -->
-  <div *ngFor="let account of accounts" class="account-card">
-    <div class="account-header d-flex align-items-center justify-content-between">
-      <h5 class="mb-0">Account Number: {{ account.accountNumber }}</h5>
-      <div class="account-balances">
-        <span class="balance-item">Opening Balance: {{ account.yearlyOpeningBalance | currency:'INR' }}</span>
-        <span class="balance-item">Closing Balance: {{ account.yearlyClosingBalance | currency:'INR' }}</span>
-      </div>
-      <button class="btn btn-primary waves-effect waves-light" (click)="toggleTable(account)">
-        View Details
-      </button>
-      
-    </div>
-
-    <!-- Table for Monthly Balances -->
-    <div *ngIf="account.showTable" class="monthly-balances">
-      <table class="table table-bordered table-striped">
-        <thead>
-          <tr>
-            <th>Month</th>
-            <th>Opening Balance</th>
-            <th>Closing Balance</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let month of yearlySummary[account.accountNumber]?.monthlySummaries">
-            <td>{{ month.month }} {{ month.year }}</td>
-            <td>{{ month.openingBalance | currency:'INR' }}</td>
-            <td>{{ month.closingBalance | currency:'INR' }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-                
-
-                </div>
-                
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>

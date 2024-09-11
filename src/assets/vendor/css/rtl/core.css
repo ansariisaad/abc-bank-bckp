@@ -157,6 +157,7 @@ h5, .h5 {
 
 h6, .h6 {
   font-size: 0.9375rem;
+  text-align: center;
 }
 
 p {
@@ -21142,6 +21143,7 @@ html:not([dir=rtl]) .switches-stacked .switch {
   width: 2.5rem;
   height: 2.5rem;
   cursor: pointer;
+  padding-left: 10px;
 }
 .avatar img {
   width: 100%;

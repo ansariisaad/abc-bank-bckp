@@ -7,41 +7,42 @@ import { baseUrl } from '../utils/api';
 @Component({
   selector: 'app-review',
   templateUrl: './review.component.html',
-  styleUrls: ['./review.component.css']
+  styleUrls: ['./review.component.css'],
 })
 export class ReviewComponent implements OnInit {
   singleData: any = {};
   allData: any[] = [];
 
-  constructor(private http: HttpClient ,private alertService: AlertService) {}
+  constructor(private http: HttpClient, private alertService: AlertService) {}
 
-  ngOnInit(){
-    this.getSelectedData();
+  id: any;
+  ngOnInit() {
+    this.id = localStorage.getItem('reviewID');
+    setTimeout(() => {
+      this.getSelectedData();
+    }, 500);
   }
 
-  getSelectedData(){
-    this.http.get<any>(baseUrl + 'review-list')
-      .subscribe({
-        next: (result) => {
-          if (result && result.data && result.data.content) {
-            this.singleData = result.data.content[1]; 
-          } else {
-            console.error('Unexpected API response structure', result);
-          }
-        },
-        error: (error) => {
-          this.alertService.showAlert('Error', 'Error fetching data'); 
-          console.error('Error fetching data', error);
+  getSelectedData() {
+    this.http.get<any>(baseUrl + 'review-list').subscribe({
+      next: (result) => {
+        console.log(result, 'this.singleData');
+        if (result && result.data && result.data.content) {
+          this.singleData = result.data.content[0];
+          //this.singleData = result.data.content[this.id];
+        } else {
+          console.error('Unexpected API response structure', result);
         }
-      });
+      },
+      error: (error) => {
+        this.alertService.showAlert('Error', 'Error fetching data');
+        console.error('Error fetching data', error);
+      },
+    });
   }
 
-  
 
+ 
 
-  // hover 
-
-  
-  
-  
+  // hover
 }

@@ -1,4 +1,12 @@
-import {Component, OnInit,AfterViewInit,Renderer2,ChangeDetectorRef,ViewChild,ElementRef,} from '@angular/core';
+import {
+  Component,
+  OnInit,
+  AfterViewInit,
+  Renderer2,
+  ChangeDetectorRef,
+  ViewChild,
+  ElementRef,
+} from '@angular/core';
 import { AlertService } from '../utils/aleartService';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
@@ -25,7 +33,7 @@ import { baseUrl } from '../utils/api';
 export class ManualFourRowComponent implements OnInit, AfterViewInit {
   forecastForm!: FormGroup;
 
-  private apiUrl = baseUrl +'forecasts';
+  private apiUrl = baseUrl + 'forecasts';
 
   corporateCode: string = '';
   corporateName: string = '';
@@ -372,13 +380,18 @@ export class ManualFourRowComponent implements OnInit, AfterViewInit {
 
   onAccountTypeChange() {
     if (this.formData.corporateCode && this.formData.accountType) {
-      const url = baseUrl + `accounts/by-type?accountType=${this.formData.accountType}&corporateId=${this.corporateCodeId}`;
+      const url =
+        baseUrl +
+        `accounts/by-type?accountType=${this.formData.accountType}&corporateId=${this.corporateCodeId}`;
       this.http
         .get(url)
         .pipe(
           catchError((error) => {
             console.error('Error occurred while fetching accounts:', error);
-            this.alertService.showAlert('Error','Error occurred while fetching accounts.');
+            this.alertService.showAlert(
+              'Error',
+              'Error occurred while fetching accounts.'
+            );
             return throwError(error);
           })
         )
@@ -386,7 +399,10 @@ export class ManualFourRowComponent implements OnInit, AfterViewInit {
           this.accountTypes = response.data;
         });
     } else {
-      this.alertService.showAlert('Error','Please add Corporate Code and select an Account Type first');
+      this.alertService.showAlert(
+        'Error',
+        'Please add Corporate Code and select an Account Type first'
+      );
     }
   }
 
@@ -407,7 +423,10 @@ export class ManualFourRowComponent implements OnInit, AfterViewInit {
 
     if (missingFields.length > 0) {
       // If there are missing fields, display a warning message
-      this.alertService.showAlert('Missing Field',`The following fields are missing: ${missingFields.join(', ')}`);
+      this.alertService.showAlert(
+        'Missing Field',
+        `The following fields are missing: ${missingFields.join(', ')}`
+      );
     } else {
       // If all required fields are filled, submit the form
       console.log('Submitting form data:', this.formData);
@@ -420,16 +439,63 @@ export class ManualFourRowComponent implements OnInit, AfterViewInit {
         .pipe(
           catchError((error) => {
             console.error('Error occurred while saving the forecast:', error);
-            this.alertService.showAlert('Error','Error occurred while saving the forecast.');
+            this.alertService.showAlert(
+              'Error',
+              'Error occurred while saving the forecast.'
+            );
             return throwError(error);
           })
         )
         .subscribe((response) => {
           console.log('Forecast saved successfully:', response);
-          this.alertService.showAlert('Success','Forecast saved successfully!');
+          this.alertService.showAlert(
+            'Success',
+            'Forecast saved successfully!'
+          );
+          this.formData = {
+            corporateCode: '',
+            corporateName: '',
+            forecastingAs: '',
+            forecastCurrency: 'INR',
+            entryType: '',
+            narration: '',
+            description: '',
+            mode: '',
+            beneficiaryPayers: '',
+            accountType: '',
+            accountNumber: '',
+            forecastedAmount: '',
+            lockRecord: false,
+            valueDate: '',
+            recurringFrom: '',
+            recurringTo: '',
+            recurringPattern: '',
+          };
           // Optionally, you can reset the form or provide feedback to the user here
         });
     }
+  }
+
+  cancel() {
+    this.formData = {
+      corporateCode: '',
+      corporateName: '',
+      forecastingAs: '',
+      forecastCurrency: 'INR',
+      entryType: '',
+      narration: '',
+      description: '',
+      mode: '',
+      beneficiaryPayers: '',
+      accountType: '',
+      accountNumber: '',
+      forecastedAmount: '',
+      lockRecord: false,
+      valueDate: '',
+      recurringFrom: '',
+      recurringTo: '',
+      recurringPattern: '',
+    };
   }
 
   checkForMissingFields(): string[] {
@@ -440,8 +506,7 @@ export class ManualFourRowComponent implements OnInit, AfterViewInit {
       'forecastingAs',
       'entryType',
       'narration',
-      'valueDate',
-      
+      // 'valueDate',
 
       'mode',
 
