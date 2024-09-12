@@ -21,8 +21,9 @@ const routes: Routes = [
   { path: 'summary-view/:year/:month', component: SummaryViewComponent }, // Updated route with parameters
   // { path: '', redirectTo: '/summary-view', pathMatch: 'full' },
   {path : 'listing-page' , component : ListingPageComponent},
-  {path : 'review' , component : ReviewComponent},
-  {path : 'summary-view' , component : SummaryViewComponent}
+  // {path : 'review' , component : ReviewComponent},
+  {path : 'summary-view' , component : SummaryViewComponent},
+  { path: 'review/:id', component: ReviewComponent },
 
 ];
 

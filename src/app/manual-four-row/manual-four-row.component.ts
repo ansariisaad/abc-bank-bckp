@@ -15,6 +15,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { baseUrl } from '../utils/api';
+import { localUrl } from '../utils/api';
+import { basename } from 'path';
 
 @Component({
   selector: 'app-manual-four-row',
@@ -433,7 +435,7 @@ export class ManualFourRowComponent implements OnInit, AfterViewInit {
 
       this.http
         .post(
-          'http://167.172.220.75:8084/CashflowForecastingApplication/api/forecasts',
+          baseUrl + 'forecasts',
           this.formData
         )
         .pipe(

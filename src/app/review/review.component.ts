@@ -3,6 +3,9 @@ import { Component, OnInit } from '@angular/core';
 // import Swal from 'sweetalert2';
 import { AlertService } from '../utils/aleartService';
 import { baseUrl } from '../utils/api';
+import { Route } from '@angular/router';
+import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-review',
@@ -13,25 +16,27 @@ export class ReviewComponent implements OnInit {
   singleData: any = {};
   allData: any[] = [];
 
-  constructor(private http: HttpClient, private alertService: AlertService) {}
+  constructor(private http: HttpClient, private alertService: AlertService ,private route: ActivatedRoute) {}
 
   id: any;
-  ngOnInit() {
-    this.id = localStorage.getItem('reviewID');
-    setTimeout(() => {
-      this.getSelectedData();
-    }, 500);
+  
+    ngOnInit() {
+      this.route.params.subscribe(params => {
+        this.id = params['id'];
+        this.getSelectedData();
+      });
   }
 
   getSelectedData() {
     this.http.get<any>(baseUrl + 'review-list').subscribe({
       next: (result) => {
-        console.log(result, 'this.singleData');
+        console.log(result, 'API response');
         if (result && result.data && result.data.content) {
-          this.singleData = result.data.content[0];
-          //this.singleData = result.data.content[this.id];
+          this.singleData = result.data.content[this.id] || {};
+          console.log(this.singleData, 'singleData after assignment');
         } else {
           console.error('Unexpected API response structure', result);
+          this.alertService.showAlert('Error', 'Unexpected data structure received');
         }
       },
       error: (error) => {

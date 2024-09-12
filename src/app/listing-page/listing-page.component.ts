@@ -3,9 +3,14 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { baseUrl, rejectSearch } from 'src/app/utils/api';
+import { Router } from '@angular/router';
 import { response } from 'express';
 import { AlertService } from '../utils/aleartService';
+// import { localUrl } from 'src/app/utils/api';
 import { error } from 'console';
+import { basename } from 'path';
+import { constants } from 'buffer';
+import { Route } from '@angular/router';
 // import DoneIcon from '@mui/icons-material/Done';
 
 @Component({
@@ -16,8 +21,8 @@ import { error } from 'console';
 export class ListingPageComponent implements OnInit {
   // selectAllTick : boolean = false
   // rejectAllTick : boolean = true
-  cancelIcon = baseUrl + 'pending-list/reject'
-  rejectPost = baseUrl + 'rejectAll'
+  cancelIcon = baseUrl + 'pending-list/reject';
+  rejectPost = baseUrl + 'rejectAll';
   selectedIds: number[] = [];
   rejectionReason: string = '';
   tickBoxClick: boolean = true;
@@ -118,7 +123,7 @@ export class ListingPageComponent implements OnInit {
     console.log(this.searchParam, 'this.searchParam11  ');
     if (this.currentStatus === 'rejected') {
       apiUrl =
-        baseUrls +
+        baseUrl +
         'rejected/search?' +
         this.searchParam +
         '=' +
@@ -127,7 +132,7 @@ export class ListingPageComponent implements OnInit {
     if (this.currentStatus === 'pending') {
       console.log(this.searchParam, 'this.searchParam222');
       apiUrl =
-        baseUrls +
+        baseUrl +
         'pending-list/search?' +
         this.searchParam +
         '=' +
@@ -135,7 +140,7 @@ export class ListingPageComponent implements OnInit {
     }
     if (this.currentStatus === 'review') {
       apiUrl =
-        baseUrls +
+        baseUrl +
         'review-list/search?' +
         this.searchParam +
         '=' +
@@ -212,21 +217,22 @@ export class ListingPageComponent implements OnInit {
   // checkbox auto click
 
   checkedItems: boolean[] = []; // Array to store the checked status of individual checkboxes
-
   rejectIDS: any = [];
   // Method to toggle checkboxes
   fetchResults() {
-    
-    this.http.get<any[]>('your-api-endpoint').subscribe(data => {
+    this.http.get<any[]>('your-api-endpoint').subscribe((data) => {
       this.results = data;
       this.checkedItems = new Array(data.length).fill(false); // Initialize checkbox states
     });
   }
 
+ 
   toggleCheckbox(event: Event, id: number): void {
     const isChecked = (event.target as HTMLInputElement).checked;
-    console.log(`Checkbox ${isChecked ? 'checked' : 'unchecked'} for ID: ${id}`);
-    
+    console.log(
+      `Checkbox ${isChecked ? 'checked' : 'unchecked'} for ID: ${id}`
+    );
+
     if (isChecked) {
       this.selectedIds.push(id);
     } else {
@@ -236,7 +242,6 @@ export class ListingPageComponent implements OnInit {
       }
     }
   }
-  
 
   toggleHeaderCheckbox(event: Event): void {
     const isChecked = (event.target as HTMLInputElement).checked;
@@ -244,11 +249,9 @@ export class ListingPageComponent implements OnInit {
     this.checkedItems = new Array(this.results.length).fill(isChecked);
   }
 
-
-
   // Initialize the checkedItems array based on the length of results
 
-  constructor(private http: HttpClient, private alertService: AlertService ) {}
+  constructor(private http: HttpClient, private alertService: AlertService ,  private router: Router) {}
 
   allData: any[] = [];
 
@@ -273,10 +276,12 @@ export class ListingPageComponent implements OnInit {
     });
   }
 
-  view(id: any) {
-    localStorage.setItem('reviewID', id);
+  view(event :MouseEvent ,id: any) {
     console.log(`View button clicked for ID: ${id}`);
+    this.router.navigate(['/review' , id])
   }
+
+  
 
   // manual show the pending url
 
@@ -292,6 +297,7 @@ export class ListingPageComponent implements OnInit {
         this.results = response.data.content || []; // Ensure data structure is correct
       },
       (error) => {
+        this.alertService.showAlert('error', 'No Data Found');
         console.error('Search request failed', error);
       }
     );
@@ -304,6 +310,7 @@ export class ListingPageComponent implements OnInit {
         this.results = response.data.content || []; // Ensure data structure is correct
       },
       (error) => {
+        this.alertService.showAlert('error', 'No Data Found');
         console.error('Search request failed', error);
       }
     );
@@ -325,6 +332,7 @@ export class ListingPageComponent implements OnInit {
         this.results = response.data.content || []; // Ensure data structure is correct
       },
       (error) => {
+        this.alertService.showAlert('error', 'No Data Found');
         console.error('Review request failed', error);
       }
     );
@@ -343,7 +351,7 @@ export class ListingPageComponent implements OnInit {
     return this.http.get<any>(this.reviewBtnUrl).pipe(
       catchError((error) => {
         console.error('Review request failed', error);
-        return of({ data: [] }); 
+        return of({ data: [] });
       })
     );
   }
@@ -351,15 +359,19 @@ export class ListingPageComponent implements OnInit {
   // popyp rejectAllbtn api
   isPopupVisible = false;
   inputValue = '';
-  isDialogVisible =false
+  isDialogVisible = false;
+  editPopUpVisible = false;
 
   showPopup() {
     this.isPopupVisible = true;
   }
   showPopup1() {
-    this.isPopupVisible = true;
+    this.isDialogVisible = true;
   }
-  
+
+  // showPopup2() {
+  //   this.editPopUpVisible = true;
+  // }
 
   onCancel() {
     // Handle cancel action
@@ -370,27 +382,33 @@ export class ListingPageComponent implements OnInit {
     // Handle cancel action
     this.isPopupVisible = false;
   }
-  
-  onConfirm1(){
+
+  cancle2() {
+    this.editPopUpVisible = false;
+  }
+
+  onConfirm1() {
     console.log('Confirmed with:', this.inputValue);
     this.isPopupVisible = false;
 
-    this.http.post<any>(this.cancelIcon, {
-      ids: this.selectedIds,
-      rejectionReason: this.rejectionReason,
-    }).subscribe(
-      response => {
-        this.alertService.showAlert(
-          'success',
-          'Your Data is Verified To Reject'
-        );
-        console.log('Response:', response);
-      },
-      error => {
-        console.error('Error:', error);
-      }
-    );
-
+    this.http
+      .post<any>(this.cancelIcon, {
+        ids: this.selectedIds,
+        rejectionReason: this.rejectionReason,
+      })
+      .subscribe(
+        (response) => {
+          this.alertService.showAlert(
+            'success',
+            'Your Data is Verified To Reject'
+          );
+          console.log('Response:', response);
+        },
+        (error) => {
+          this.alertService.showAlert('error', 'No Data Found');
+          console.error('Error:', error);
+        }
+      );
   }
 
   // rejectionReason : string = ''
@@ -398,58 +416,87 @@ export class ListingPageComponent implements OnInit {
     console.log('Confirmed with:', this.inputValue);
     this.isPopupVisible = false;
     // api
-    this.http.post<any>(this.rejectPost, {
-      ids: this.selectedIds,
-      rejectionReason: this.rejectionReason,
-    }).subscribe(
-      response => {
-        this.alertService.showAlert(
-          'success',
-          'Your Data is Verified To Reject'
-        );
-        console.log('Response:', response);
-      },
-      error => {
-        console.error('Error:', error);
-      }
-    );
+    this.http
+      .post<any>(this.rejectPost, {
+        ids: this.selectedIds,
+        rejectionReason: this.rejectionReason,
+      })
+      .subscribe(
+        (response) => {
+          this.alertService.showAlert(
+            'success',
+            'Your Data is Verified To Reject'
+          );
+          console.log('Response:', response);
+        },
+        (error) => {
+          console.error('Error:', error);
+        }
+      );
+  }
+
+  onConfirm2() {
+    // this.http.put()
+  }
+
+  
+
+  userDetails : any = {
+    "id" : 0,
+    "corporateCode" : "",
+    "corporateName" : "",
+    "forecastingAs" : "",
+    "entryType" : "",
+    "description" : "",
+    "accountNumber" : "",
+    // "forecastedAmount" "",
+    "currency" : "",
+
   }
 
 
-  authorizeBtn(){
-    this.http.post(
-      baseUrl + 'pending/authorizeAll' , null, 
-    ).subscribe(
-      response => {
+
+  
+  showPopup2(event: MouseEvent, id: number, data : any) {
+    this.editPopUpVisible = true;
+    this.userDetails = data;
+    console.log(`Button clicked for ID: ${id}`);
+
+
+
+  }
+  authorizeBtn() {
+    this.http.post(baseUrl + 'pending/authorizeAll', null).subscribe(
+      (response) => {
         this.alertService.showAlert(
           'success',
           'Your Data is Verified To authorize'
         );
         console.log('Response:', response);
       },
-      error => {
+      (error) => {
         console.error('Error:', error);
       }
     );
   }
 
-
-  rightIconApi(){
-    this.http.post( baseUrl + 'pending-list/authorize/' + this.selectedIds , null,).subscribe(
-      response => {
-        this.alertService.showAlert(
-          'success',
-          'Your Data is Ready To Review'
-        );
-        console.log('Response:', response);
-      },
-      error => {
-        console.error('Error:', error);
-      }
-    )
+  rightIconApi() {
+    this.http
+      .post(baseUrl + 'pending-list/authorize/' + this.selectedIds, null)
+      .subscribe(
+        (response) => {
+          this.alertService.showAlert(
+            'success',
+            'Your Data is Ready To Review'
+          );
+          console.log('Response:', response);
+        },
+        (error) => {
+          console.error('Error:', error);
+        }
+      );
   }
 
+
+  // dropdown data
 }
-
-
- 
