@@ -4,8 +4,9 @@ import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { baseUrl, rejectSearch } from 'src/app/utils/api';
 import { Router } from '@angular/router';
-import { response } from 'express';
 import { AlertService } from '../utils/aleartService';
+
+import { response } from 'express';
 // import { localUrl } from 'src/app/utils/api';
 import { error } from 'console';
 import { basename } from 'path';
@@ -19,9 +20,9 @@ import { Route } from '@angular/router';
   styleUrls: ['./listing-page.component.css'],
 })
 export class ListingPageComponent implements OnInit {
-  // selectAllTick : boolean = false
-  // rejectAllTick : boolean = true
-  cancelIcon = baseUrl + 'pending-list/reject';
+  loading: boolean = false;
+  error: string | null = null; //new add
+  cancelIcon = baseUrl + 'pending-list/reject/';
   rejectPost = baseUrl + 'rejectAll';
   selectedIds: number[] = [];
   rejectionReason: string = '';
@@ -40,6 +41,12 @@ export class ListingPageComponent implements OnInit {
   searchValue: string = '';
   currentStatus: 'rejected' | 'pending' | 'review' | null = null;
 
+  ngOnInit() {
+    this.pendingBtnUrl();
+    this.checkedItems = this.results.map(() => false);
+    throw new Error('Method not implemented.');
+  }
+
   onOptionChange() {
     console.log('Selected option:', this.selectedOption);
   }
@@ -51,17 +58,21 @@ export class ListingPageComponent implements OnInit {
 
   searchParam = '';
   search() {
+    this.loading = true;
+    this.error = null;
     if (!this.currentStatus) {
       this.alertService.showAlert(
         'Error',
         'Please select Any One Of This Reject, Pending, or Review first'
       );
       console.log('Please select Reject, Pending, or Review first');
+      this.loading = false;
       return;
     }
 
     if (!this.searchValue) {
       console.log('Please enter a search value');
+      this.loading = false;
       return;
     }
 
@@ -152,6 +163,7 @@ export class ListingPageComponent implements OnInit {
 
     this.http.get(apiUrl).subscribe(
       (response: any) => {
+        this.loading = false;
         console.log('Search results:', response);
         if (response.code === 200 && response.data && response.data.content) {
           this.results = response.data.content;
@@ -165,6 +177,7 @@ export class ListingPageComponent implements OnInit {
         }
       },
       (error) => {
+        this.loading = false;
         console.error('Error occurred during search:', error);
         this.results = [];
         // this.alertService.showAlert('Error' ,'You Select Wrong Input ');
@@ -174,6 +187,7 @@ export class ListingPageComponent implements OnInit {
 
   // button
   rejectBtn() {
+    this.results = [];
     this.showOnlyPending = false;
     this.hideOnlyPending = true;
     this.rejectAll = false;
@@ -182,13 +196,14 @@ export class ListingPageComponent implements OnInit {
     console.log(this.selectedOption, 'selectedOption');
     this.rejectBtnApi();
     this.setStatus('rejected');
-    this.search();
+    // this.search();
     this.showAdditionalColumns = true;
     this.tickBox = false;
     console.log('Flag value:', this.showAdditionalColumns);
   }
 
   reviewBtn() {
+    this.results = [];
     this.showOnlyPending = false;
     this.hideOnlyPending = true;
     this.showAdditionalColumns = false;
@@ -198,10 +213,11 @@ export class ListingPageComponent implements OnInit {
     console.log(this.selectedOption, 'selectedOption');
     this.reviewBtnApi();
     this.setStatus('review');
-    this.search();
+    // this.search();
   }
 
   pendingBtn() {
+    this.results = [];
     this.hideOnlyPending = false;
     console.log(this.selectedOption, 'selectedOption');
     this.showOnlyPending = true;
@@ -211,7 +227,6 @@ export class ListingPageComponent implements OnInit {
     this.showAdditionalColumns = false;
     this.tickBox = true;
     this.setStatus('pending');
-    this.search();
     this.pendingBtnApi();
   }
   // checkbox auto click
@@ -226,7 +241,6 @@ export class ListingPageComponent implements OnInit {
     });
   }
 
- 
   toggleCheckbox(event: Event, id: number): void {
     const isChecked = (event.target as HTMLInputElement).checked;
     console.log(
@@ -251,17 +265,18 @@ export class ListingPageComponent implements OnInit {
 
   // Initialize the checkedItems array based on the length of results
 
-  constructor(private http: HttpClient, private alertService: AlertService ,  private router: Router) {}
+  constructor(
+    private http: HttpClient,
+    private alertService: AlertService,
+    private router: Router
+  ) {}
 
   allData: any[] = [];
 
-  ngOnInit() {
-    this.checkedItems = this.results.map(() => false);
-    this.pendingBtnUrl();
-    throw new Error('Method not implemented.');
-  }
-
   pendingBtnUrl(): void {
+    // this.loading = false
+    // console.log ('loading' , this.loading)
+    this.results = [];
     this.http.get<any>(baseUrl + 'pending-list').subscribe({
       next: (result) => {
         if (result && result.data && result.data.content) {
@@ -271,17 +286,16 @@ export class ListingPageComponent implements OnInit {
         }
       },
       error: (error) => {
+        // this.loading = true;
         console.error('Error fetching data', error);
       },
     });
   }
 
-  view(event :MouseEvent ,id: any) {
+  view(event: MouseEvent, id: any) {
     console.log(`View button clicked for ID: ${id}`);
-    this.router.navigate(['/review' , id])
+    this.router.navigate(['/review', id]);
   }
-
-  
 
   // manual show the pending url
 
@@ -291,12 +305,15 @@ export class ListingPageComponent implements OnInit {
   private rejectBtnUrl = baseUrl + 'rejected' + '?size=50';
 
   pendingBtnApi(): void {
+    this.results = [];
+    this.loading = true;
     this.loadPendingData().subscribe(
       (response) => {
         console.log('API Response:', response); // Debug statement
         this.results = response.data.content || []; // Ensure data structure is correct
       },
       (error) => {
+        this.loading = false;
         this.alertService.showAlert('error', 'No Data Found');
         console.error('Search request failed', error);
       }
@@ -304,13 +321,16 @@ export class ListingPageComponent implements OnInit {
   }
 
   rejectBtnApi(): void {
+    // this.results = [];
+    this.loading = true;
     this.loadRejectData().subscribe(
       (response) => {
         console.log('API Response:', response); // Debug statement
         this.results = response.data.content || []; // Ensure data structure is correct
       },
       (error) => {
-        this.alertService.showAlert('error', 'No Data Found');
+        this.loading = false;
+        this.alertService.showAlert('error', 'Search request failed');
         console.error('Search request failed', error);
       }
     );
@@ -326,12 +346,15 @@ export class ListingPageComponent implements OnInit {
   }
 
   reviewBtnApi(): void {
+    this.results = [];
+    this.loading = true;
     this.loadReviewData().subscribe(
       (response) => {
         console.log('Review API Response:', response); // Debug statement
         this.results = response.data.content || []; // Ensure data structure is correct
       },
       (error) => {
+        this.loading = false;
         this.alertService.showAlert('error', 'No Data Found');
         console.error('Review request failed', error);
       }
@@ -380,19 +403,20 @@ export class ListingPageComponent implements OnInit {
 
   onCancel1() {
     // Handle cancel action
-    this.isPopupVisible = false;
+    this.isDialogVisible = false;
   }
 
   cancle2() {
-    this.editPopUpVisible = false;
+    this.isDialogVisible = false;
   }
 
   onConfirm1() {
     console.log('Confirmed with:', this.inputValue);
     this.isPopupVisible = false;
+    // this.loading = true;
 
     this.http
-      .post<any>(this.cancelIcon, {
+      .post<any>(this.rejectPost, {
         ids: this.selectedIds,
         rejectionReason: this.rejectionReason,
       })
@@ -405,11 +429,13 @@ export class ListingPageComponent implements OnInit {
           console.log('Response:', response);
         },
         (error) => {
-          this.alertService.showAlert('error', 'No Data Found');
           console.error('Error:', error);
         }
       );
+
+    
   }
+  
 
   // rejectionReason : string = ''
   onConfirm() {
@@ -435,36 +461,26 @@ export class ListingPageComponent implements OnInit {
       );
   }
 
-  onConfirm2() {
-    // this.http.put()
-  }
-
   
 
-  userDetails : any = {
-    "id" : 0,
-    "corporateCode" : "",
-    "corporateName" : "",
-    "forecastingAs" : "",
-    "entryType" : "",
-    "description" : "",
-    "accountNumber" : "",
+  userDetails: any = {
+    id: 0,
+    corporateCode: '',
+    corporateName: '',
+    forecastingAs: '',
+    entryType: '',
+    description: '',
+    accountNumber: '',
     // "forecastedAmount" "",
-    "currency" : "",
+    currency: '',
+  };
 
-  }
-
-
-
-  
-  showPopup2(event: MouseEvent, id: number, data : any) {
+  showPopup2(event: MouseEvent, id: number, data: any) {
     this.editPopUpVisible = true;
     this.userDetails = data;
     console.log(`Button clicked for ID: ${id}`);
-
-
-
   }
+
   authorizeBtn() {
     this.http.post(baseUrl + 'pending/authorizeAll', null).subscribe(
       (response) => {
@@ -496,7 +512,6 @@ export class ListingPageComponent implements OnInit {
         }
       );
   }
-
 
   // dropdown data
 }

@@ -16,15 +16,20 @@ export class ReviewComponent implements OnInit {
   singleData: any = {};
   allData: any[] = [];
 
-  constructor(private http: HttpClient, private alertService: AlertService ,private route: ActivatedRoute) {}
+  constructor(
+    private http: HttpClient,
+    private alertService: AlertService,
+    private route: ActivatedRoute
+  ) {}
 
   id: any;
-  
-    ngOnInit() {
-      this.route.params.subscribe(params => {
-        this.id = params['id'];
-        this.getSelectedData();
-      });
+
+  ngOnInit() {
+    this.route.params.subscribe((params) => {
+      this.id = params['id'];
+      console.log(this.id, 'this.id==');
+      this.getSelectedData();
+    });
   }
 
   getSelectedData() {
@@ -32,11 +37,15 @@ export class ReviewComponent implements OnInit {
       next: (result) => {
         console.log(result, 'API response');
         if (result && result.data && result.data.content) {
-          this.singleData = result.data.content[this.id] || {};
+          console.log(result.data.content, 'result.data.content');
+          this.singleData = result.data.content[this.id];
           console.log(this.singleData, 'singleData after assignment');
         } else {
           console.error('Unexpected API response structure', result);
-          this.alertService.showAlert('Error', 'Unexpected data structure received');
+          this.alertService.showAlert(
+            'Error',
+            'Unexpected data structure received'
+          );
         }
       },
       error: (error) => {
@@ -45,9 +54,6 @@ export class ReviewComponent implements OnInit {
       },
     });
   }
-
-
- 
 
   // hover
 }

@@ -256,7 +256,7 @@ getFingerImage2(AppointmentId:any,FingerImageId:any){
   const result = Response.json(); 
   this.fingerImageTbl2= result; 
   this.imagePath2 = this.fingerImageTbl2.FingerImagePath;
-      this.Quality2 = this.fingerImageTbl2.Quality; 
+  this.Quality2 = this.fingerImageTbl2.Quality; 
 
 }
 
@@ -318,97 +318,5 @@ getFingerImage5(AppointmentId:any,FingerImageId:any){
 
 }
 
-// search2() {
-  //   if (!this.currentStatus) {
-  //     alert('Please select Any One Of This Reject, Pending, or Review first');
-  //     console.log('Please select Reject, Pending, or Review first');
-  //     return;
-  //   }
 
-  //   if (!this.searchValue) {
-  //     console.log('Please enter a search value');
-  //     return;
-  //   }
-
-  //   console.log(this.searchValue, 'search value');
-
-  //   let searchParam: string;
-  //   switch (this.selectedOption) {
-  //     case 0:
-  //       searchParam = 'referenceNo';
-  //       break;
-  //     case 1:
-  //       searchParam = 'corporateCode';
-  //       break;
-  //     case 2:
-  //       searchParam = 'corporateName';
-  //       break;
-  //     case 3:
-  //       searchParam = 'forecastingAs';
-  //       break;
-  //     case 4:
-  //       searchParam = 'entryType';
-  //       break;
-  //     default:
-  //       searchParam = '';
-  //   }
-
-  //   let apiUrl: string;
-  //   const baseUrl =
-  //     'http://167.172.220.75:8084/CashflowForecastingApplication/api';
-
-  //   switch (this.currentStatus) {
-  //     case 'rejected':
-  //       apiUrl = `${baseUrl}/rejected/search`;
-  //       break;
-  //     case 'pending':
-  //       apiUrl = `${baseUrl}/pending-list/search`;
-  //       break;
-  //     case 'review':
-  //       apiUrl = `${baseUrl}/review-list/search`;
-  //       break;
-  //     default:
-  //       console.log('Invalid status');
-  //       return;
-  //   }
-
-  //   const params = { [searchParam]: this.searchValue };
-
-  //   this.http.get(apiUrl, { params: params }).subscribe(
-  //     (response: any) => {
-  //       console.log('Search results:', response);
-  //       if (response.code === 200 && response.data && response.data.content) {
-  //         this.results = response.data.content;
-  //       } else {
-  //         alert('Data Not Found');
-  //         console.error(
-  //           'No data found or error in response:',
-  //           response.message
-  //         );
-  //         this.results = [];
-  //       }
-  //     },
-  //     (error) => {
-  //       console.error('Error occurred during search:', error);
-  //       this.results = [];
-  //       alert('You Select Wrong Input ');
-  //     }
-  //   );
-  // }
-
-
-  
-  // onOptionChange() {
-  //   console.log('Selected option:', this.selectedOption);
-  // }
-
-  // setStatus(status: 'rejected' | 'pending' | 'review') {
-  //   this.currentStatus = status;
-  //   console.log(`Status set to: ${status}`);
-  // }
-
-
-
-  // vishal sir code listing page search 
-   
 

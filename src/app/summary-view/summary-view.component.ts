@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { baseUrl } from '../utils/api';
 
 @Component({
   selector: 'app-summary-view',
@@ -27,7 +28,7 @@ export class SummaryViewComponent implements OnInit {
   }
 
   fetchData(): void {
-    const apiUrl = `http://192.168.1.19:8080/api/transactions/custom-range-summary?accountNumber=ACC00101&startDate=2024-09-01&endDate=2024-11-02`;
+    const apiUrl =  `${baseUrl} transactions/custom-range-summary?accountNumber=ACC00101&startDate=2024-09-01&endDate=2024-11-02`;
 
     this.http.get(apiUrl).subscribe({
       next: (response: any) => {

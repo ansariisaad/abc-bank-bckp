@@ -15,6 +15,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ListingPageComponent } from './listing-page/listing-page.component';
 import { ReviewComponent } from './review/review.component';
 import { SummaryViewComponent } from './summary-view/summary-view.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
     declarations: [
@@ -37,6 +38,7 @@ import { SummaryViewComponent } from './summary-view/summary-view.component';
       FormsModule,
       HttpClientModule,
       ReactiveFormsModule,
+      MatProgressSpinnerModule,
       // ReviewComponent
 
     ],

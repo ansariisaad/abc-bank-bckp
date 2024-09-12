@@ -3,6 +3,7 @@ import { Chart } from 'chart.js/auto';
 import { baseUrl } from '../utils/api';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+// import { baseUrl } from '../utils/api';
 
 @Component({
   selector: 'app-summary',
@@ -65,7 +66,7 @@ export class SummaryComponent implements AfterViewInit {
   }
 
   private fetchYearlySummary(accountNumber: string) {
-    const yearlySummaryUrl = `http://192.168.1.19:8080/api/transactions/custom-range-summary?accountNumber=${accountNumber}&startDate=2024-09-01&endDate=2024-11-02`;
+    const yearlySummaryUrl =  `${baseUrl}transactions/custom-range-summary?accountNumber=${accountNumber}&startDate=2024-09-01&endDate=2024-11-02`;
 //
 //  const yearlySummaryUrl = `${hostport}api/transactions/yearly-summary?accountNumber=${accountNumber}`;
     this.http.get(yearlySummaryUrl).subscribe(
