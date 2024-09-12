@@ -3,8 +3,6 @@ import { Component, OnInit } from '@angular/core';
 // import Swal from 'sweetalert2';
 import { AlertService } from '../utils/aleartService';
 import { baseUrl } from '../utils/api';
-import { Route } from '@angular/router';
-import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -35,25 +33,11 @@ export class ReviewComponent implements OnInit {
   getSelectedData() {
     this.http.get<any>(baseUrl + 'review-list').subscribe({
       next: (result) => {
-        console.log(result, 'API response');
-        if (result && result.data && result.data.content) {
-          console.log(result.data.content, 'result.data.content');
-          this.singleData = result.data.content[this.id];
-          console.log(this.singleData, 'singleData after assignment');
-        } else {
-          console.error('Unexpected API response structure', result);
-          this.alertService.showAlert(
-            'Error',
-            'Unexpected data structure received'
-          );
-        }
+        this.singleData = result.data.content[this.id];
       },
       error: (error) => {
         this.alertService.showAlert('Error', 'Error fetching data');
-        console.error('Error fetching data', error);
       },
     });
   }
-
-  // hover
 }

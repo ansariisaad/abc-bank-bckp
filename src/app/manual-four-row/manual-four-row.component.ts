@@ -15,8 +15,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { baseUrl } from '../utils/api';
-import { localUrl } from '../utils/api';
-import { basename } from 'path';
 
 @Component({
   selector: 'app-manual-four-row',
@@ -62,8 +60,6 @@ export class ManualFourRowComponent implements OnInit, AfterViewInit {
   searchTerm: string = '';
   searchBy: string = 'corporateCode';
   apiAllUrl = baseUrl + 'corporate/all?page=0&size=3';
-  apiSearchByCodeUrl = baseUrl + 'corporate/corporate-code';
-  apiSearchByNameUrl = baseUrl + 'corporate/corporate-name';
   accountOptions = {
     internalAccount: [
       { value: 'internalAcc001', text: 'Internal Acc 001' },
@@ -147,170 +143,110 @@ export class ManualFourRowComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.corporateCodeAllDetail();
-    this.loadAccountNumbers('internal Account');
-    this.loadAccountNumbers('externalAccount');
   }
   ngAfterViewInit(): void {
-    this.checkElementAvailability();
-    this.setupDropdownListeners();
+    // this.setupDropdownListeners();
     this.toggleValueDate(); // Initial call if needed to set the correct fields visibility on load
   }
-  checkElementAvailability(): void {
-    console.log('entryTypeSelect:', this.entryTypeSelect);
-    console.log('accountTypeSelect:', this.accountTypeSelect);
-    console.log('accountNumberSelect:', this.accountNumberSelect);
-    console.log('forecastingAsSelect:', this.forecastingAsSelect);
-    console.log('modeSelect:', this.modeSelect);
-    console.log('searchBySelect:', this.searchBySelect);
-  }
-  corporateCodeAllDetail(): void {
-    this.http
-      .get(this.apiAllUrl)
-      .pipe(
-        catchError((error) => {
-          console.error('Error fetching corporate details', error);
-          return throwError(
-            () => new Error('Error fetching corporate details')
-          );
-        })
-      )
-      .subscribe(
-        (result: any) => {
-          if (result && result.data && result.data.content) {
-            console.log(result.data, 'apihit or not');
-            // Display only the first 3 entries from result.data.content
-            this.users = result.data.content.slice(0, 3);
-            this.filteredUsers = [...this.users];
-          } else {
-            console.error('Unexpected response structure', result);
-          }
-        },
-        (error) => console.error('Subscription error', error)
-      );
-  }
 
-  searchByCorporateCode(corporateCode: string): void {
-    this.http
-      .get(`${this.apiSearchByCodeUrl}/${corporateCode}`)
-      .pipe(
-        catchError((error) => {
-          console.error('Error fetching user details by code', error);
-          return throwError(
-            () => new Error('Error fetching user details by code')
-          );
-        })
-      )
-      .subscribe(
-        (result: any) => {
-          this.filteredUsers = result.data.content;
-          console.log('2');
-        },
-        (error) => console.error('Subscription error', error)
-      );
+  corporateCodeAllDetail(): void {
+    this.http.get(this.apiAllUrl).subscribe(
+      (result: any) => {
+        if (result && result.data && result.data.content) {
+          this.users = result.data.content.slice(0, 3);
+          this.filteredUsers = [...this.users];
+        } else {
+          console.error('Unexpected response structure', result);
+        }
+      },
+      (error) => console.error('Subscription error', error)
+    );
   }
 
   openPopup() {
-    console.log('shivani');
     this.corporateCodeAllDetail();
   }
-  searchByCorporateName(corporateName: string): void {
-    if (corporateName) {
-      const url = `${this.apiSearchByNameUrl}/${encodeURIComponent(
-        corporateName
-      )}`;
-      this.http
-        .get(url)
-        .pipe(
-          catchError((error) => {
-            console.error('Error fetching user details by name', error);
-            return throwError(
-              () => new Error('Error fetching user details by name')
-            );
-          })
-        )
-        .subscribe(
-          (result: any) => {
-            this.filteredUsers = result.data.content;
-          },
-          (error) => console.error('Subscription error', error)
-        );
-    } else {
-      this.filteredUsers = [...this.users];
-      this.cdr.detectChanges();
-    }
-  }
-  onSearchClick(): void {
-    if (this.searchBy === 'corporateCode') {
-      console.log(this.searchBy, 'this.searchBy');
-      this.searchByCorporateCode(this.searchbyTxt);
-    } else if (this.searchBy === 'corporateName') {
-      console.log(this.searchBy, 'this.searchBy');
-      this.searchByCorporateName(this.searchbyTxt);
-    }
-  }
-  setupDropdownListeners(): void {
-    if (this.forecastingAsSelect) {
-      this.renderer.listen(
-        this.forecastingAsSelect.nativeElement,
-        'change',
-        (event: Event) => {
-          const selectedForecasting = (event.target as HTMLSelectElement).value;
-          this.updateModeOptions(selectedForecasting);
-        }
-      );
-    } else {
-      console.error('forecastingAsSelect is not available');
-    }
-    if (this.accountTypeSelect) {
-      this.renderer.listen(
-        this.accountTypeSelect.nativeElement,
-        'change',
-        (event: Event) => {
-          const selectedType = (event.target as HTMLSelectElement).value;
-          this.updateAccountNumberOptions(selectedType);
-        }
-      );
-    } else {
-      console.error('accountTypeSelect is not available');
-    }
-    if (this.searchBySelect) {
-      this.renderer.listen(
-        this.searchBySelect.nativeElement,
-        'change',
-        (event: Event) => {
-          this.searchBy = (event.target as HTMLSelectElement).value;
-        }
-      );
-    } else {
-      console.error('searchBySelect is not available');
-    }
-    if (this.modeSelect) {
-      this.renderer.listen(
-        this.modeSelect.nativeElement,
-        'change',
-        (event: Event) => {
-          // Handle mode selection if needed
-        }
-      );
-    } else {
-      console.error('modeSelect is not available');
-    }
 
-    if (this.accountTypeSelect) {
-      this.renderer.listen(
-        this.accountTypeSelect.nativeElement,
-        'change',
-        (event: Event) => {
-          const selectedType = (event.target as HTMLSelectElement).value;
-          console.log('Selected account type:', selectedType); // Debug: Log the selected type
-          // Call function to load account numbers based on selected type
-          this.loadAccountNumbers(selectedType);
-        }
-      );
-    } else {
-      console.error('accountTypeSelect is not available');
+  searchByCorporate(corporateCode: string): void {
+    let url = baseUrl + 'corporate/corporate-code/' + this.searchbyTxt;
+    if (corporateCode === 'corporateName') {
+      url = baseUrl + 'corporate/corporate-name/' + this.searchbyTxt;
     }
+    this.http.get(url).subscribe(
+      (result: any) => {
+        this.filteredUsers = result.data.content;
+      },
+      (error) => console.error('Subscription error', error)
+    );
   }
+ 
+  corporateTypeTxt: any;
+  onSearchClick(): void { 
+    let url = baseUrl + 'corporate/corporate-code/' + this.searchbyTxt;
+    if (this.corporateTypeTxt === 'corporateName') {
+      url = baseUrl + 'corporate/corporate-name/' + this.searchbyTxt;
+    }
+    this.http.get(url).subscribe(
+      (result: any) => {
+        this.filteredUsers = result.data.content;
+      },
+      (error) => console.error('Subscription error', error)
+    ); 
+  }
+  
+  // setupDropdownListeners(): void {
+  //   if (this.forecastingAsSelect) {
+  //     this.renderer.listen(
+  //       this.forecastingAsSelect.nativeElement,
+  //       'change',
+  //       (event: Event) => {
+  //         const selectedForecasting = (event.target as HTMLSelectElement).value;
+  //         this.updateModeOptions(selectedForecasting);
+  //       }
+  //     );
+  //   }
+  //   if (this.accountTypeSelect) {
+  //     this.renderer.listen(
+  //       this.accountTypeSelect.nativeElement,
+  //       'change',
+  //       (event: Event) => {
+  //         const selectedType = (event.target as HTMLSelectElement).value;
+  //         this.updateAccountNumberOptions(selectedType);
+  //       }
+  //     );
+  //   }
+  //   if (this.searchBySelect) {
+  //     this.renderer.listen(
+  //       this.searchBySelect.nativeElement,
+  //       'change',
+  //       (event: Event) => {
+  //         this.searchBy = (event.target as HTMLSelectElement).value;
+  //       }
+  //     );
+  //   }
+  //   if (this.modeSelect) {
+  //     this.renderer.listen(
+  //       this.modeSelect.nativeElement,
+  //       'change',
+  //       (event: Event) => {
+  //         // Handle mode selection if needed
+  //       }
+  //     );
+  //   }
+
+  //   if (this.accountTypeSelect) {
+  //     this.renderer.listen(
+  //       this.accountTypeSelect.nativeElement,
+  //       'change',
+  //       (event: Event) => {
+  //         const selectedType = (event.target as HTMLSelectElement).value;
+  //         this.loadAccountNumbers(selectedType);
+  //       }
+  //     );
+  //   } else {
+  //     console.error('accountTypeSelect is not available');
+  //   }
+  // }
 
   toggleValueDate(): void {
     const entryType = (
@@ -328,8 +264,6 @@ export class ManualFourRowComponent implements OnInit, AfterViewInit {
     const recurringFieldsPattern = document.getElementById(
       'recurringFieldsPattern'
     ) as HTMLElement;
-
-    console.log('Entry Type:', entryType);
 
     if (entryType === 'O') {
       valueDateField.style.display = 'block';
@@ -349,33 +283,35 @@ export class ManualFourRowComponent implements OnInit, AfterViewInit {
     }
   }
 
-  updateAccountNumberOptions(selectedType: string): void {
-    const accountNumberSelect = this.accountNumberSelect.nativeElement;
-    accountNumberSelect.innerHTML =
-      '<option value="" selected>Please Select</option>';
-    const options =
-      this.accountOptions[selectedType as keyof typeof this.accountOptions] ||
-      [];
-    options.forEach((option) => {
-      const opt = this.renderer.createElement('option');
-      opt.value = option.value;
-      opt.textContent = option.text;
-      this.renderer.appendChild(accountNumberSelect, opt);
-    });
-  }
-  updateModeOptions(selectedForecasting: string): void {
-    const modeSelect = this.modeSelect.nativeElement;
-    modeSelect.innerHTML = '<option value="" selected>Please Select</option>';
-    const options =
-      this.modeOptions[selectedForecasting as keyof typeof this.modeOptions] ||
-      [];
-    options.forEach((option) => {
-      const opt = this.renderer.createElement('option');
-      opt.value = option.value;
-      opt.textContent = option.text;
-      this.renderer.appendChild(modeSelect, opt);
-    });
-  }
+  // updateAccountNumberOptions(selectedType: string): void {
+  //   const accountNumberSelect = this.accountNumberSelect.nativeElement;
+  //   accountNumberSelect.innerHTML =
+  //     '<option value="" selected>Please Select</option>';
+  //   const options =
+  //     this.accountOptions[selectedType as keyof typeof this.accountOptions] ||
+  //     [];
+  //   options.forEach((option) => {
+  //     const opt = this.renderer.createElement('option');
+  //     opt.value = option.value;
+  //     opt.textContent = option.text;
+  //     this.renderer.appendChild(accountNumberSelect, opt);
+  //   });
+  // }
+
+  // updateModeOptions(selectedForecasting: string): void {
+  //   const modeSelect = this.modeSelect.nativeElement;
+  //   modeSelect.innerHTML = '<option value="" selected>Please Select</option>';
+  //   const options =
+  //     this.modeOptions[selectedForecasting as keyof typeof this.modeOptions] ||
+  //     [];
+  //   options.forEach((option) => {
+  //     const opt = this.renderer.createElement('option');
+  //     opt.value = option.value;
+  //     opt.textContent = option.text;
+  //     this.renderer.appendChild(modeSelect, opt);
+  //   });
+  // }
+
   refreshData(): void {
     this.corporateCodeAllDetail();
   }
@@ -385,21 +321,9 @@ export class ManualFourRowComponent implements OnInit, AfterViewInit {
       const url =
         baseUrl +
         `accounts/by-type?accountType=${this.formData.accountType}&corporateId=${this.corporateCodeId}`;
-      this.http
-        .get(url)
-        .pipe(
-          catchError((error) => {
-            console.error('Error occurred while fetching accounts:', error);
-            this.alertService.showAlert(
-              'Error',
-              'Error occurred while fetching accounts.'
-            );
-            return throwError(error);
-          })
-        )
-        .subscribe((response: any) => {
-          this.accountTypes = response.data;
-        });
+      this.http.get(url).subscribe((response: any) => {
+        this.accountTypes = response.data;
+      });
     } else {
       this.alertService.showAlert(
         'Error',
@@ -410,17 +334,12 @@ export class ManualFourRowComponent implements OnInit, AfterViewInit {
 
   corporateCodeId: any;
   selectRow(user: any): void {
-    console.log(user, 'user');
     this.corporateCodeId = user.id;
     this.formData.corporateCode = user.corporateCode;
     this.formData.corporateName = user.corporateName;
   }
-  onSearchInput(): void {
-    console.log('Search term:', this.searchTerm);
-  }
 
   submitForm(): void {
-    // Check if all required fields have values
     const missingFields = this.checkForMissingFields();
 
     if (missingFields.length > 0) {
@@ -431,16 +350,10 @@ export class ManualFourRowComponent implements OnInit, AfterViewInit {
       );
     } else {
       // If all required fields are filled, submit the form
-      console.log('Submitting form data:', this.formData);
-
       this.http
-        .post(
-          baseUrl + 'forecasts',
-          this.formData
-        )
+        .post(baseUrl + 'forecasts', this.formData)
         .pipe(
           catchError((error) => {
-            console.error('Error occurred while saving the forecast:', error);
             this.alertService.showAlert(
               'Error',
               'Error occurred while saving the forecast.'
@@ -449,7 +362,6 @@ export class ManualFourRowComponent implements OnInit, AfterViewInit {
           })
         )
         .subscribe((response) => {
-          console.log('Forecast saved successfully:', response);
           this.alertService.showAlert(
             'Success',
             'Forecast saved successfully!'
@@ -504,14 +416,11 @@ export class ManualFourRowComponent implements OnInit, AfterViewInit {
     // List all required fields
     const requiredFields = [
       'corporateCode',
-
       'forecastingAs',
       'entryType',
       'narration',
-      // 'valueDate',
-
+      'valueDate',
       'mode',
-
       'accountType',
       'accountNumber',
       'forecastedAmount',
@@ -536,38 +445,30 @@ export class ManualFourRowComponent implements OnInit, AfterViewInit {
     } else if (encodedType === 'externalAccount') {
       encodedType = 'External Account';
     }
-    const url = `http://167.172.220.75:8084/CashflowForecastingApplicationapi/accounts/by-type?accountType=${encodeURIComponent(
+
+    const url = `${baseUrl}accounts/by-type?accountType=${encodeURIComponent(
       encodedType
     )}&corporateId=${corporateId}`;
     console.log('Fetching account numbers with URL:', url); // Log the request URL for debugging
 
-    this.http
-      .get<any>(url)
-      .pipe(
-        catchError((error: any) => {
-          console.error('Error fetching account numbers:', error); // Log any errors encountered
-          return throwError(() => new Error('Error fetching account numbers')); // Handle the error
-        })
-      )
-      .subscribe(
-        (result: any) => {
-          console.log('API response:', result); // Log the API response to inspect its structure
-          if (result && result.data) {
-            this.accountTypes = result.data.map((item: any) => ({
-              value: item.accountNumber, // Use accountNumber as the value
-
-              text: item.accountNumber, // Use accountNumber as the display text
-            }));
-          } else {
-            this.accountTypes = [];
-            console.error('Unexpected response structure:', result); // Log if the response is null or unexpected
-          }
-          this.cdr.detectChanges(); // Update the view with new data
-        },
-
-        (error: any) => {
-          console.error('Subscription error:', error); // Log any subscription errors
+    this.http.get<any>(url).subscribe(
+      (result) => {
+        console.log('API response:', result); // Log the API response to inspect its structure
+        if (result && result.data) {
+          this.accountTypes = result.data.map((item: any) => ({
+            value: item.accountNumber, // Use accountNumber as the value
+            text: item.accountNumber, // Use accountNumber as the display text
+          }));
+        } else {
+          this.accountTypes = [];
+          console.error('Unexpected response structure:', result); // Log if the response is null or unexpected
         }
-      );
+        this.cdr.detectChanges(); // Update the view with new data
+      },
+      (error) => {
+        console.error('Error fetching account numbers:', error); // Log any errors encountered
+        this.alertService.showAlert('Error', 'Error fetching account numbers.');
+      }
+    );
   }
 }

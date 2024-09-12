@@ -2,17 +2,9 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { baseUrl, rejectSearch } from 'src/app/utils/api';
+import { baseUrl } from 'src/app/utils/api';
 import { Router } from '@angular/router';
 import { AlertService } from '../utils/aleartService';
-
-import { response } from 'express';
-// import { localUrl } from 'src/app/utils/api';
-import { error } from 'console';
-import { basename } from 'path';
-import { constants } from 'buffer';
-import { Route } from '@angular/router';
-// import DoneIcon from '@mui/icons-material/Done';
 
 @Component({
   selector: 'app-listing-page',
@@ -33,18 +25,16 @@ export class ListingPageComponent implements OnInit {
   rejectAll: boolean = false;
   authorizeAll: boolean = false;
   hideOnlyPending: boolean = false;
-  // searchValue: string = '';
   showOnlyPending: boolean = false;
   results: any[] = [];
   data: any[] = [];
   selectedOption: number = 0;
   searchValue: string = '';
   currentStatus: 'rejected' | 'pending' | 'review' | null = null;
-
+  isLoading = true;
   ngOnInit() {
     this.pendingBtnUrl();
     this.checkedItems = this.results.map(() => false);
-    throw new Error('Method not implemented.');
   }
 
   onOptionChange() {
@@ -76,41 +66,10 @@ export class ListingPageComponent implements OnInit {
       return;
     }
 
-    // let selectedOption2 = this.selectedOption;
-
     console.log(this.selectedOption, 'this.selectedOption');
     console.log(this.searchValue, 'this.searchValue');
 
     let apiUrl = '';
-    const baseUrls =
-      'http://167.172.220.75:8084/CashflowForecastingApplication/api/';
-
-    // if (this.selectedOption === 0 * 1) {
-    //   console.log('0', '=============');
-    //   this.searchParam = 'referenceNo';
-    //   console.log(this.searchParam, 'this.searchParam');
-    // }
-    // if (this.selectedOption === 1 * 1) {
-    //   console.log('1', '=============');
-    //   this.searchParam = 'corporateCode';
-    //   console.log(this.searchParam, 'this.searchParam');
-    // }
-    // if (this.selectedOption === 2 * 1) {
-    //   console.log('2', '=============');
-    //   this.searchParam = 'corporateName';
-    //   console.log(this.searchParam, 'this.searchParam');
-    // }
-    // if (this.selectedOption === 3 * 1) {
-    //   console.log('3', '=============');
-    //   this.searchParam = 'forecastingAs';
-    //   console.log(this.searchParam, 'this.searchParam');
-    // }
-    // if (this.selectedOption === 4 * 1) {
-    //   console.log('4', '=============');
-    //   this.searchParam = 'entryType';
-    //   console.log(this.searchParam, 'this.searchParam');
-    // }
-
     switch (this.selectedOption * 1) {
       case 0:
         this.searchParam = 'referenceNo';
@@ -180,7 +139,6 @@ export class ListingPageComponent implements OnInit {
         this.loading = false;
         console.error('Error occurred during search:', error);
         this.results = [];
-        // this.alertService.showAlert('Error' ,'You Select Wrong Input ');
       }
     );
   }
@@ -196,7 +154,6 @@ export class ListingPageComponent implements OnInit {
     console.log(this.selectedOption, 'selectedOption');
     this.rejectBtnApi();
     this.setStatus('rejected');
-    // this.search();
     this.showAdditionalColumns = true;
     this.tickBox = false;
     console.log('Flag value:', this.showAdditionalColumns);
@@ -213,7 +170,6 @@ export class ListingPageComponent implements OnInit {
     console.log(this.selectedOption, 'selectedOption');
     this.reviewBtnApi();
     this.setStatus('review');
-    // this.search();
   }
 
   pendingBtn() {
@@ -229,11 +185,9 @@ export class ListingPageComponent implements OnInit {
     this.setStatus('pending');
     this.pendingBtnApi();
   }
-  // checkbox auto click
 
   checkedItems: boolean[] = []; // Array to store the checked status of individual checkboxes
   rejectIDS: any = [];
-  // Method to toggle checkboxes
   fetchResults() {
     this.http.get<any[]>('your-api-endpoint').subscribe((data) => {
       this.results = data;
@@ -274,8 +228,6 @@ export class ListingPageComponent implements OnInit {
   allData: any[] = [];
 
   pendingBtnUrl(): void {
-    // this.loading = false
-    // console.log ('loading' , this.loading)
     this.results = [];
     this.http.get<any>(baseUrl + 'pending-list').subscribe({
       next: (result) => {
@@ -284,10 +236,13 @@ export class ListingPageComponent implements OnInit {
         } else {
           console.error('Unexpected API response structure', result);
         }
+        this.isLoading = false;
       },
       error: (error) => {
         // this.loading = true;
         console.error('Error fetching data', error);
+
+        this.isLoading = false;
       },
     });
   }
@@ -373,28 +328,24 @@ export class ListingPageComponent implements OnInit {
   private loadReviewData(): Observable<any> {
     return this.http.get<any>(this.reviewBtnUrl).pipe(
       catchError((error) => {
-        console.error('Review request failed', error);
+        // console.error('Review request failed', error);
         return of({ data: [] });
       })
     );
   }
 
   // popyp rejectAllbtn api
+  // inputValue = '';
   isPopupVisible = false;
-  inputValue = '';
   isDialogVisible = false;
   editPopUpVisible = false;
 
   showPopup() {
     this.isPopupVisible = true;
   }
-  showPopup1() {
+  showPopup1(id:any) {
     this.isDialogVisible = true;
   }
-
-  // showPopup2() {
-  //   this.editPopUpVisible = true;
-  // }
 
   onCancel() {
     // Handle cancel action
@@ -411,8 +362,8 @@ export class ListingPageComponent implements OnInit {
   }
 
   onConfirm1() {
-    console.log('Confirmed with:', this.inputValue);
-    this.isPopupVisible = false;
+    // console.log('Confirmed with:', this.inputValue);
+    this.isDialogVisible = false;
     // this.loading = true;
 
     this.http
@@ -432,14 +383,11 @@ export class ListingPageComponent implements OnInit {
           console.error('Error:', error);
         }
       );
-
-    
   }
-  
 
   // rejectionReason : string = ''
   onConfirm() {
-    console.log('Confirmed with:', this.inputValue);
+    // console.log('Confirmed with:', this.inputValue);
     this.isPopupVisible = false;
     // api
     this.http
@@ -459,26 +407,6 @@ export class ListingPageComponent implements OnInit {
           console.error('Error:', error);
         }
       );
-  }
-
-  
-
-  userDetails: any = {
-    id: 0,
-    corporateCode: '',
-    corporateName: '',
-    forecastingAs: '',
-    entryType: '',
-    description: '',
-    accountNumber: '',
-    // "forecastedAmount" "",
-    currency: '',
-  };
-
-  showPopup2(event: MouseEvent, id: number, data: any) {
-    this.editPopUpVisible = true;
-    this.userDetails = data;
-    console.log(`Button clicked for ID: ${id}`);
   }
 
   authorizeBtn() {

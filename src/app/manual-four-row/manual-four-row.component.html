@@ -21,8 +21,7 @@
             <div
               class="d-flex align-content-center flex-wrap gap-3"
               style="margin-top: -10px"
-            >
-            </div>
+            ></div>
           </div>
           <!-- form field -->
           <form #form="ngForm" (ngSubmit)="submitForm()">
@@ -313,7 +312,7 @@
                 style="display: none"
               >
                 <div class="mb-3">
-                  <label for="recurringPattern" class="form-label" 
+                  <label for="recurringPattern" class="form-label"
                     >Recurring Pattern*</label
                   >
                   <select
@@ -332,10 +331,18 @@
               </div>
               <!-- Submit Button for  -->
               <div class="d-flex justify-content-start">
-                <button type="button" (click)="cancel()" class="btn btn-secondary mt-3 btn-1">
+                <button
+                  type="button"
+                  (click)="cancel()"
+                  class="btn btn-secondary mt-3 btn-1"
+                >
                   Cancel
                 </button>
-                <button type="submit" class="btn btn-primary mt-3" id="fade-in-animation">
+                <button
+                  type="submit"
+                  class="btn btn-primary mt-3"
+                  id="fade-in-animation"
+                >
                   Submit
                 </button>
 
@@ -369,7 +376,9 @@
                               <select
                                 class="form-select bbl-0"
                                 aria-label="Search By"
-                                id="searchBy"
+                                id="corporateType"
+                                name="corporateType"
+                                [(ngModel)]="corporateTypeTxt"
                               >
                                 <option value="corporateCode" selected>
                                   Corporate Code
@@ -454,7 +463,6 @@
                   </div>
                 </div>
               </div>
-              <!-- </div> -->
             </div>
           </form>
         </div>
