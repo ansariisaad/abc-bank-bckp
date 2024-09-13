@@ -349,12 +349,10 @@ export class ListingPageComponent implements OnInit {
   }
 
   onCancel() {
-    // Handle cancel action
     this.isPopupVisible = false;
   }
 
   onCancel1() {
-    // Handle cancel action
     this.isDialogVisible = false;
   }
 
@@ -363,35 +361,29 @@ export class ListingPageComponent implements OnInit {
   }
 
   onConfirm1() {
-    // console.log('Confirmed with:', this.inputValue);
     this.isDialogVisible = false;
-    // this.loading = true;
-    // this.http
-    //   .post(baseUrl + '/pending-list/reject/' + [this.selectedId])
-    //   .subscribe((result: any) => {});
 
-    // this.http
-    //   .post<any>(this.rejectPost, {
-    //     ids: this.selectedIds,
-    //     rejectionReason: this.rejectionReason,
-    //   })
-    //   .subscribe(
-    //     (response) => {
-    //       this.alertService.showAlert(
-    //         'success',
-    //         'Your Data is Verified To Reject'
-    //       );
-    //       console.log('Response:', response);
-    //     },
-    //     (error) => {
-    //       console.error('Error:', error);
-    //     }
-    //   );
+    this.http
+      .post<any>(this.rejectPost, {
+        ids: this.selectedIds,
+        rejectionReason: this.rejectionReason,
+      })
+      .subscribe(
+        (response) => {
+          this.alertService.showAlert(
+            'success',
+            'Your Data is Verified To Reject'
+          );
+          console.log('Response:', response);
+        },
+        (error) => {
+          console.error('Error:', error);
+        }
+      );
+    
   }
 
-  // rejectionReason : string = ''
   onConfirm() {
-    // console.log('Confirmed with:', this.inputValue);
     this.isPopupVisible = false;
     // api
     this.http
@@ -445,5 +437,4 @@ export class ListingPageComponent implements OnInit {
       );
   }
 
-  // dropdown data
 }
