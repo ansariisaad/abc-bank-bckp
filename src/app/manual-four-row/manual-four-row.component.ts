@@ -419,7 +419,6 @@ export class ManualFourRowComponent implements OnInit, AfterViewInit {
       'forecastingAs',
       'entryType',
       'narration',
-      'valueDate',
       'mode',
       'accountType',
       'accountNumber',

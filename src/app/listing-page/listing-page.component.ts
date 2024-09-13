@@ -408,7 +408,8 @@ export class ListingPageComponent implements OnInit {
   }
 
   authorizeBtn() {
-    this.http.post(baseUrl + 'pending/authorizeAll' , null).subscribe(
+  
+    this.http.post(baseUrl + 'pending-list/authorizeAll', this.selectedIds).subscribe(
       (response) => {
         this.alertService.showAlert(
           'success',
@@ -421,8 +422,18 @@ export class ListingPageComponent implements OnInit {
       }
     );
   }
+  
 
   rightIconApi() {
+    if (this.selectedIds.length > 0) {
+      console.log('Selected IDs:', this.selectedIds);
+    } else {
+      this.alertService.showAlert(
+        'Select',
+        'Please select at least one checkbox!'
+      );
+    }
+
     this.http
       .post(baseUrl + 'pending-list/authorize/' + this.selectedIds, null)
       .subscribe(
@@ -432,11 +443,27 @@ export class ListingPageComponent implements OnInit {
             'Your Data is Ready To Review'
           );
           console.log('Response:', response);
+          this.refreshData()
         },
+
         (error) => {
           console.error('Error:', error);
         }
       );
+  }
+
+  // loaddata
+
+  refreshData(){
+    this.http.post<any[]>(baseUrl + 'pending-list/authorize/' + this.selectedIds, null)
+    .subscribe(
+      (response) => {
+        this.data = response; 
+      },
+      (error) => {
+        console.error('Error fetching data:', error);
+      }
+    );
   }
 
 }
