@@ -16,6 +16,7 @@ export class ListingPageComponent implements OnInit {
   error: string | null = null; //new add
   cancelIcon = baseUrl + 'pending-list/reject/';
   rejectPost = baseUrl + 'rejectAll';
+  selectedId: number[] = [];
   selectedIds: number[] = [];
   rejectionReason: string = '';
   tickBoxClick: boolean = true;
@@ -343,7 +344,7 @@ export class ListingPageComponent implements OnInit {
   showPopup() {
     this.isPopupVisible = true;
   }
-  showPopup1(id:any) {
+  showPopup1(id: any) {
     this.isDialogVisible = true;
   }
 
@@ -365,24 +366,27 @@ export class ListingPageComponent implements OnInit {
     // console.log('Confirmed with:', this.inputValue);
     this.isDialogVisible = false;
     // this.loading = true;
+    // this.http
+    //   .post(baseUrl + '/pending-list/reject/' + [this.selectedId])
+    //   .subscribe((result: any) => {});
 
-    this.http
-      .post<any>(this.rejectPost, {
-        ids: this.selectedIds,
-        rejectionReason: this.rejectionReason,
-      })
-      .subscribe(
-        (response) => {
-          this.alertService.showAlert(
-            'success',
-            'Your Data is Verified To Reject'
-          );
-          console.log('Response:', response);
-        },
-        (error) => {
-          console.error('Error:', error);
-        }
-      );
+    // this.http
+    //   .post<any>(this.rejectPost, {
+    //     ids: this.selectedIds,
+    //     rejectionReason: this.rejectionReason,
+    //   })
+    //   .subscribe(
+    //     (response) => {
+    //       this.alertService.showAlert(
+    //         'success',
+    //         'Your Data is Verified To Reject'
+    //       );
+    //       console.log('Response:', response);
+    //     },
+    //     (error) => {
+    //       console.error('Error:', error);
+    //     }
+    //   );
   }
 
   // rejectionReason : string = ''
