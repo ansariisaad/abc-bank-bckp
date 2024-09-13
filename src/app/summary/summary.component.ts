@@ -3,7 +3,6 @@ import { Chart } from 'chart.js/auto';
 import { baseUrl } from '../utils/api';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-// import { baseUrl } from '../utils/api';
 
 @Component({
   selector: 'app-summary',
@@ -66,9 +65,7 @@ export class SummaryComponent implements AfterViewInit {
   }
 
   private fetchYearlySummary(accountNumber: string) {
-    const yearlySummaryUrl =  `${baseUrl}transactions/custom-range-summary?accountNumber=${accountNumber}&startDate=2024-09-01&endDate=2024-11-02`;
-//
-//  const yearlySummaryUrl = `${hostport}api/transactions/yearly-summary?accountNumber=${accountNumber}`;
+    const yearlySummaryUrl = `${baseUrl}transactions/custom-range-summary?accountNumber=${accountNumber}&startDate=2024-09-01&endDate=2024-11-02`;
     this.http.get(yearlySummaryUrl).subscribe(
       (response: any) => {
         console.log('Yearly Summary Response:', response);
@@ -76,14 +73,11 @@ export class SummaryComponent implements AfterViewInit {
         if (response.code === 200 && response.status === 'success') {
           this.yearlySummary[accountNumber] = response.data;  
           console.log('Yearly Summary:', this.yearlySummary);
-
-          // Find the account in the accounts array
           const account = this.accounts.find(acc => acc.accountNumber === accountNumber);
-          
-          // Check if the account exists and assign the balances
+    
           if (account) {
-            account.yearlyOpeningBalance = response.data.openingBalance;  // Access the opening balance
-            account.yearlyClosingBalance = response.data.closingBalance;  // Access the closing balance
+            account.yearlyOpeningBalance = response.data.openingBalance;  
+            account.yearlyClosingBalance = response.data.closingBalance;  
             console.log('Opening Balance:', account.yearlyOpeningBalance);
             console.log('Closing Balance:', account.yearlyClosingBalance);
           }
@@ -100,7 +94,7 @@ export class SummaryComponent implements AfterViewInit {
 
 
   private buildUrl(): string {
-    let url = `${baseUrl}api/accounts/search?`;
+    let url = `${baseUrl}accounts/search?`;
     console.log('searchValue', this.searchValue);
     this.selectedOption = Number(this.selectedOption);
 
@@ -196,4 +190,5 @@ export class SummaryComponent implements AfterViewInit {
   toggleTable(account: any) {
     this.router.navigate(['/summary-view'], { queryParams: { accountNumber: account.accountNumber } });
   }
+  
 }

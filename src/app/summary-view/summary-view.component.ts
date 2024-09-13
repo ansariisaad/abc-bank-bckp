@@ -9,26 +9,31 @@ import { baseUrl } from '../utils/api';
   styleUrls: ['./summary-view.component.css'],
 })
 export class SummaryViewComponent implements OnInit {
+  accountNumber!: string;
   month!: string;
   year!: string;
-  accountSummary: any = {}; // To store account data
-  transactionList: any[] = []; // To store transaction data
-  removedTransactions: any[] = []; // To store removed transaction data
-  selectedTransactionId: number | null = null; // To store selected transaction ID for menu
-  showingTransactions: boolean = true; // To toggle table visibility
+  accountSummary: any = {}; 
+  transactionList: any[] = []; 
+  removedTransactions: any[] = [];
+  selectedTransactionId: number | null = null; 
+  showingTransactions: boolean = true;
 
   constructor(private route: ActivatedRoute, private http: HttpClient) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe((params: any) => {
-      this.month = params['month'];
-      this.year = params['year'];
-      this.fetchData(); // Fetch data based on route parameters
+    this.route.queryParams.subscribe(params => {
+      this.accountNumber = params['accountNumber'];
+      this.fetchData(); 
     });
   }
 
   fetchData(): void {
-    const apiUrl =  `${baseUrl} transactions/custom-range-summary?accountNumber=ACC00101&startDate=2024-09-01&endDate=2024-11-02`;
+    if (!this.accountNumber) {
+      console.error('No account number provided');
+      return;
+    }
+
+    const apiUrl = `${baseUrl}transactions/custom-range-summary?accountNumber=${this.accountNumber}&startDate=2024-09-01&endDate=2024-11-02`;
 
     this.http.get(apiUrl).subscribe({
       next: (response: any) => {
@@ -47,7 +52,6 @@ export class SummaryViewComponent implements OnInit {
             netCashflow: response.data.netCashflow
           };
 
-          // Extract transactions and removedTransactions
           this.transactionList = response.data.transactions.content || [];
           this.removedTransactions = response.data.ignoredTransactions.content || [];
         } else {
@@ -65,32 +69,32 @@ export class SummaryViewComponent implements OnInit {
   }
 
   editTransaction(transaction: any): void {
-    // Implement your logic for editing the transaction
+
     console.log('Edit', transaction);
   }
 
   modifyTransaction(transaction: any): void {
-    // Implement your logic for modifying the transaction
+  
     console.log('Modify', transaction);
   }
 
   deleteTransaction(transaction: any): void {
-    // Implement your logic for deleting the transaction
+
     console.log('Delete', transaction);
   }
 
   ignoreTransaction(transaction: any): void {
-    // Remove transaction from transactionList and add to removedTransactions
+ 
     this.transactionList = this.transactionList.filter(t => t.id !== transaction.id);
     this.removedTransactions.push(transaction);
-    this.showingTransactions = false; // Show removed transactions table after ignoring
+    this.showingTransactions = false; 
   }
 
   restoreTransaction(transaction: any): void {
-    // Remove transaction from removedTransactions and add back to transactionList
+
     this.removedTransactions = this.removedTransactions.filter(t => t.id !== transaction.id);
     this.transactionList.push(transaction);
-    this.showingTransactions = true; // Show transactions table after restoring
+    this.showingTransactions = true;
   }
 
   showTransactions(): void {

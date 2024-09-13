@@ -329,14 +329,12 @@ export class ListingPageComponent implements OnInit {
   private loadReviewData(): Observable<any> {
     return this.http.get<any>(this.reviewBtnUrl).pipe(
       catchError((error) => {
-        // console.error('Review request failed', error);
         return of({ data: [] });
       })
     );
   }
 
   // popyp rejectAllbtn api
-  // inputValue = '';
   isPopupVisible = false;
   isDialogVisible = false;
   editPopUpVisible = false;
@@ -363,6 +361,8 @@ export class ListingPageComponent implements OnInit {
   onConfirm1() {
     this.isDialogVisible = false;
 
+    
+
     this.http
       .post<any>(this.rejectPost, {
         ids: this.selectedIds,
@@ -382,6 +382,8 @@ export class ListingPageComponent implements OnInit {
       );
     
   }
+
+  
 
   onConfirm() {
     this.isPopupVisible = false;
@@ -406,7 +408,7 @@ export class ListingPageComponent implements OnInit {
   }
 
   authorizeBtn() {
-    this.http.post(baseUrl + 'pending/authorizeAll', null).subscribe(
+    this.http.post(baseUrl + 'pending/authorizeAll' , null).subscribe(
       (response) => {
         this.alertService.showAlert(
           'success',
