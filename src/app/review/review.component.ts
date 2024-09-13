@@ -33,9 +33,7 @@ export class ReviewComponent implements OnInit {
   getSelectedData() {
     this.http.get<any>(baseUrl + 'review-list').subscribe({
       next: (result) => {
-        // this.singleData = result.data.content[this.id];
         this.singleData = result.data.content.find((result: { id: number; }) => result.id == this.id);
-        // this.singleData = result.data.content.find(item => item.id == this.id);
 
       },
       error: (error) => {
