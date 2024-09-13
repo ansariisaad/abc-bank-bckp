@@ -248,10 +248,10 @@ export class ListingPageComponent implements OnInit {
     });
   }
 
-
-  view(event: MouseEvent, id: number) {
+  id : number = 0;
+  view(event: MouseEvent, id: number ) {
     console.log(`View button clicked for ID: ${id}`);
-    this.router.navigate(['/review', id]);  // Navigating to the URL with the selected ID
+    this.router.navigate(['/review', id]);
   }
 
   // manual show the pending url
@@ -408,72 +408,22 @@ export class ListingPageComponent implements OnInit {
       );
   }
 
-  // authorizeBtn() {
-
-  //   if (this.selectedIds.length > 0) {
-  //     console.log('Selected IDs:', this.selectedIds);
-  //   } else {
-  //     this.alertService.showAlert(
-  //       'Select',
-  //       'Please select the checkbox!'
-  //     );
-  //   }
-  
-  //   this.http.post(baseUrl + 'pending-list/authorizeAll', this.selectedIds).subscribe(
-  //     (response) => {
-  //       this.alertService.showAlert(
-  //         'success',
-  //         'Your Data is Verified To authorize'
-  //       );
-  //       console.log('Response:', response);
-  //     },
-  //     (error) => {
-  //       console.error('Error:', error);
-  //     }
-  //   );
-  // }
-
   authorizeBtn() {
-    if (this.selectedIds.length > 0) {
-      console.log('Selected IDs:', this.selectedIds);
-      
-      this.http.post(baseUrl + 'pending-list/authorizeAll', this.selectedIds).subscribe(
-        (response) => {
-          this.alertService.showAlert(
-            'success',
-            'Your data has been verified and authorized successfully.'
-          );
-          console.log('Response:', response);
-        },
-        (error) => {
-          this.alertService.showAlert(
-            'error',
-            'An error occurred while authorizing. Please try again.'
-          );
-          console.error('Error:', error);
-        }
-      );
-    } else {
-      this.alertService.showAlert(
-        'warning',
-        'Please select at least one checkbox before authorizing.'
-      );
-    }
+    this.http.post(baseUrl + 'pending/authorizeAll' , null).subscribe(
+      (response) => {
+        this.alertService.showAlert(
+          'success',
+          'Your Data is Verified To authorize'
+        );
+        console.log('Response:', response);
+      },
+      (error) => {
+        console.error('Error:', error);
+      }
+    );
   }
-  
-  
-  
 
   rightIconApi() {
-    if (this.selectedIds.length > 0) {
-      console.log('Selected IDs:', this.selectedIds);
-    } else {
-      this.alertService.showAlert(
-        'Select',
-        'Please select at least one checkbox!'
-      );
-    }
-
     this.http
       .post(baseUrl + 'pending-list/authorize/' + this.selectedIds, null)
       .subscribe(
@@ -483,27 +433,11 @@ export class ListingPageComponent implements OnInit {
             'Your Data is Ready To Review'
           );
           console.log('Response:', response);
-          this.refreshData()
         },
-
         (error) => {
           console.error('Error:', error);
         }
       );
-  }
-
-  // loaddata
-
-  refreshData(){
-    this.http.post<any[]>(baseUrl + 'pending-list/authorize/' + this.selectedIds, null)
-    .subscribe(
-      (response) => {
-        this.data = response; 
-      },
-      (error) => {
-        console.error('Error fetching data:', error);
-      }
-    );
   }
 
 }

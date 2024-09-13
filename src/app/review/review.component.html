@@ -53,7 +53,7 @@
           </div>
           <div class="col-md-3 col-sm-6">
             <strong>Account Number</strong>
-            <p>{{ singleData.accountNumber }} - {{ singleData.currency }}</p>
+            <p>{{ singleData.accountNumber }} </p>
           </div>
           <div class="col-md-3 col-sm-6">
             <strong>Description</strong>
@@ -69,12 +69,11 @@
           </div>
           <div class="col-md-3 col-sm-6">
             <strong>Forecasted Amount</strong>
-            <p>{{ singleData.forecastedAmount }}</p>
+            <p>{{ singleData.currency }} - {{ singleData.forecastedAmount }} </p>
           </div>
         </div>
         
         <div class="button-container">
-          <!-- <button type="button" class="btn btn-secondary mt-3"><a class="a" href="/manual-four">Cancel</a></button> -->
           <button type="submit" class="btn btn-primary mt-3" ><a class="a" href="javascript:void(0)" routerLink="/listing-page">Back</a></button>
         </div>
       </div>

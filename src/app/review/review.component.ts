@@ -30,15 +30,58 @@ export class ReviewComponent implements OnInit {
     });
   }
 
-  getSelectedData() {
-    this.http.get<any>(baseUrl + 'review-list').subscribe({
-      next: (result) => {
-        this.singleData = result.data.content.find((result: { id: number; }) => result.id == this.id);
+  // getSelectedData(): void {
+  //   this.http.get<any>(`${baseUrl}review-list`, ).subscribe({
+  //     next: (result) => {
+  //       console.log('API Result:', result);  // Log the entire result to check its structure
+  //       if (result.data && Array.isArray(result.data.content)) {
+  //         // Assuming result.data.content is an array of objects with an 'id' property
+  //         this.singleData = result.data.content.find((result: { id: number }) => result.id == this.id);
 
+  //         console.log('Single Data:', this.singleData);
+          
+  //         if (!this.singleData) {
+  //           this.alertService.showAlert('Info', 'No data found for the provided ID.');
+  //         }
+  //       } else {
+  //         this.alertService.showAlert('Error', 'Unexpected response structure.');
+  //       }
+  //     },
+  //     error: (error) => {
+  //       this.alertService.showAlert('Error', 'Error fetching data');
+  //     },
+  //   });
+  // }
+
+
+  getSelectedData(): void {
+    this.http.get<any>(`${baseUrl}review-list`, {
+      params: {
+        size: '100'  // Add the size parameter here
+      }
+    }).subscribe({
+      next: (result) => {
+        console.log('API Result:', result);  // Log the entire result to check its structure
+        if (result.data && Array.isArray(result.data.content)) {
+          // Assuming result.data.content is an array of objects with an 'id' property
+          this.singleData = result.data.content.find((item: { id: number }) => item.id == this.id);
+  
+          console.log('Single Data:', this.singleData);
+          
+          if (!this.singleData) {
+            this.alertService.showAlert('Info', 'No data found for the provided ID.');
+          }
+        } else {
+          this.alertService.showAlert('Error', 'Unexpected response structure.');
+        }
       },
       error: (error) => {
         this.alertService.showAlert('Error', 'Error fetching data');
       },
     });
   }
+  
+  
+  
+  
 }
