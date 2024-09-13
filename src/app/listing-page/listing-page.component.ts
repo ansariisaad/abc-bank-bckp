@@ -248,10 +248,6 @@ export class ListingPageComponent implements OnInit {
     });
   }
 
-  // view(event: MouseEvent, id: number) {
-  //   console.log(`View button clicked for ID: ${id}`);
-  //   this.router.navigate(['/review', id]);
-  // }
 
   view(event: MouseEvent, id: number) {
     console.log(`View button clicked for ID: ${id}`);
