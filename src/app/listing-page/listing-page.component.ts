@@ -248,9 +248,14 @@ export class ListingPageComponent implements OnInit {
     });
   }
 
-  view(event: MouseEvent, id: any) {
+  // view(event: MouseEvent, id: number) {
+  //   console.log(`View button clicked for ID: ${id}`);
+  //   this.router.navigate(['/review', id]);
+  // }
+
+  view(event: MouseEvent, id: number) {
     console.log(`View button clicked for ID: ${id}`);
-    this.router.navigate(['/review', id]);
+    this.router.navigate(['/review', id]);  // Navigating to the URL with the selected ID
   }
 
   // manual show the pending url
@@ -407,21 +412,60 @@ export class ListingPageComponent implements OnInit {
       );
   }
 
-  authorizeBtn() {
+  // authorizeBtn() {
+
+  //   if (this.selectedIds.length > 0) {
+  //     console.log('Selected IDs:', this.selectedIds);
+  //   } else {
+  //     this.alertService.showAlert(
+  //       'Select',
+  //       'Please select the checkbox!'
+  //     );
+  //   }
   
-    this.http.post(baseUrl + 'pending-list/authorizeAll', this.selectedIds).subscribe(
-      (response) => {
-        this.alertService.showAlert(
-          'success',
-          'Your Data is Verified To authorize'
-        );
-        console.log('Response:', response);
-      },
-      (error) => {
-        console.error('Error:', error);
-      }
-    );
+  //   this.http.post(baseUrl + 'pending-list/authorizeAll', this.selectedIds).subscribe(
+  //     (response) => {
+  //       this.alertService.showAlert(
+  //         'success',
+  //         'Your Data is Verified To authorize'
+  //       );
+  //       console.log('Response:', response);
+  //     },
+  //     (error) => {
+  //       console.error('Error:', error);
+  //     }
+  //   );
+  // }
+
+  authorizeBtn() {
+    if (this.selectedIds.length > 0) {
+      console.log('Selected IDs:', this.selectedIds);
+      
+      this.http.post(baseUrl + 'pending-list/authorizeAll', this.selectedIds).subscribe(
+        (response) => {
+          this.alertService.showAlert(
+            'success',
+            'Your data has been verified and authorized successfully.'
+          );
+          console.log('Response:', response);
+        },
+        (error) => {
+          this.alertService.showAlert(
+            'error',
+            'An error occurred while authorizing. Please try again.'
+          );
+          console.error('Error:', error);
+        }
+      );
+    } else {
+      this.alertService.showAlert(
+        'warning',
+        'Please select at least one checkbox before authorizing.'
+      );
+    }
   }
+  
+  
   
 
   rightIconApi() {
