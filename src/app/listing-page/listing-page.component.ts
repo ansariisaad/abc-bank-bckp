@@ -144,6 +144,15 @@ export class ListingPageComponent implements OnInit {
     );
   }
 
+  // 
+
+  navigateToEdit(id: number) {
+    console.log("shivani")
+    // Navigate to the manual-four-row page with the result ID
+    this.router.navigate(['/edit-entry', id]);
+    console.log(this.router,"aaaaaaaaaaaaaaa")
+  }
+
   // button
   rejectBtn() {
     this.results = [];

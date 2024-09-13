@@ -88,7 +88,7 @@
               class="d-flex justify-content-between align-items-center mb-3"
               style="margin-top: 4px"
             >
-              <span>0 Transactions Selected</span>
+              <span> </span>
               <div>
                 <button
                   class="btn rounded-pill btn-label-primary me-2"
@@ -175,6 +175,7 @@
                       <button
                         class="btn btn-outline-warning waves-effect"
                         *ngIf="hideOnlyPending"
+                        (click)="navigateToEdit(result.id)"
                       >
                         <i class="mdi mdi-pencil-box-multiple-outline"></i>
                       </button>

@@ -57,7 +57,7 @@ export class ReviewComponent implements OnInit {
   getSelectedData(): void {
     this.http.get<any>(`${baseUrl}review-list`, {
       params: {
-        size: '100'  // Add the size parameter here
+        size: '100' 
       }
     }).subscribe({
       next: (result) => {

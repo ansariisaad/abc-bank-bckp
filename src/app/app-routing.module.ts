@@ -7,6 +7,7 @@ import { RejectedPageComponent } from './rejected-page/rejected-page.component';
 import { ListingPageComponent } from './listing-page/listing-page.component';
 import { ReviewComponent } from './review/review.component';
 import { SummaryViewComponent } from './summary-view/summary-view.component';
+import { EditEntryComponent } from './edit-entry/edit-entry.component';
 
 // Define the routes for the application
 const routes: Routes = [
@@ -19,6 +20,7 @@ const routes: Routes = [
   { path: 'listing-page', component: ListingPageComponent }, // Route for ListingPageComponent
   { path: 'summary-view', component: SummaryViewComponent }, // Route for SummaryViewComponent (without parameters)
   { path: 'review/:id', component: ReviewComponent }, // Route for ReviewComponent with 'id' parameter
+  { path: 'edit-entry/:id', component: EditEntryComponent },
 ];
 
 @NgModule({

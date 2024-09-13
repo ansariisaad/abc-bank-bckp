@@ -12,6 +12,7 @@ import { ListingPageComponent } from './listing-page/listing-page.component';
 import { ReviewComponent } from './review/review.component';
 import { SummaryViewComponent } from './summary-view/summary-view.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { EditEntryComponent } from './edit-entry/edit-entry.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     HttpClientModule,
     ReactiveFormsModule,
     MatProgressSpinnerModule,
+    EditEntryComponent,
   ],
   providers: [],
   bootstrap: [AppComponent],
