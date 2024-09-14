@@ -13,7 +13,7 @@ import { AlertService } from '../utils/aleartService';
 })
 export class ListingPageComponent implements OnInit {
   loading: boolean = false;
-  error: string | null = null; //new add
+  error: string | null = null;
   cancelIcon = baseUrl + 'pending-list/reject/';
   rejectPost = baseUrl + 'rejectAll';
   selectedId: number[] = [];
@@ -33,9 +33,10 @@ export class ListingPageComponent implements OnInit {
   searchValue: string = '';
   currentStatus: 'rejected' | 'pending' | 'review' | null = null;
   isLoading = true;
+
   ngOnInit() {
-    this.pendingBtnUrl();
-    this.checkedItems = this.results.map(() => false);
+    this.loadPendingData();
+    this.checkedItems = this.results.map(() => true);
   }
 
   onOptionChange() {
@@ -51,6 +52,7 @@ export class ListingPageComponent implements OnInit {
   search() {
     this.loading = true;
     this.error = null;
+
     if (!this.currentStatus) {
       this.alertService.showAlert(
         'Error',
@@ -92,6 +94,7 @@ export class ListingPageComponent implements OnInit {
     }
 
     console.log(this.searchParam, 'this.searchParam11  ');
+   
     if (this.currentStatus === 'rejected') {
       apiUrl =
         baseUrl +
@@ -184,18 +187,15 @@ export class ListingPageComponent implements OnInit {
 
   pendingBtn() {
     this.results = [];
-    this.hideOnlyPending = false;
     console.log(this.selectedOption, 'selectedOption');
+    this.loadPendingData();
     this.showOnlyPending = true;
-    this.pendingBtnApi();
-    this.rejectAll = true;
-    this.authorizeAll = true;
+    this.hideOnlyPending = false;
     this.showAdditionalColumns = false;
-    this.tickBox = true;
     this.setStatus('pending');
-    this.pendingBtnApi();
   }
 
+  
   checkedItems: boolean[] = []; // Array to store the checked status of individual checkboxes
   rejectIDS: any = [];
   fetchResults() {
@@ -237,23 +237,54 @@ export class ListingPageComponent implements OnInit {
 
   allData: any[] = [];
 
-  pendingBtnUrl(): void {
+  // pendingBtnUrl(): void {
+  //   this.results = [];
+  //   this.http.get<any>(baseUrl + 'pending-list').subscribe({
+  //     next: (result) => {
+  //       if (result && result.data && result.data.content) {
+  //         this.results = result.data.content; // Adjust according to the actual response structure
+  //       } else {
+  //         console.error('Unexpected API response structure', result);
+  //       }
+  //       this.isLoading = false;
+  //     },
+  //     error: (error) => {
+  //       // this.loading = true;
+  //       console.error('Error fetching data', error);
+
+  //       this.isLoading = false;
+  //     },
+  //   });
+  // }
+
+  loadPendingData(){
     this.results = [];
-    this.http.get<any>(baseUrl + 'pending-list').subscribe({
-      next: (result) => {
-        if (result && result.data && result.data.content) {
-          this.results = result.data.content; // Adjust according to the actual response structure
+    this.tickBox = true;
+    this.rejectAll = true;
+    this.authorizeAll = true;
+    this.isLoading = true;
+    this.showOnlyPending = true;
+    this.hideOnlyPending = false;
+    this.showAdditionalColumns = false;
+    this.setStatus('pending');
+
+    this.http.get<any>(`${baseUrl}pending-list?size=50`).subscribe({
+      next: (response) => {
+        console.log('API Response:', response); // Debug statement
+        if (response && response.data && response.data.content) {
+          this.results = response.data.content;
+          this.checkedItems = new Array(this.results.length).fill(false);
         } else {
-          console.error('Unexpected API response structure', result);
+          console.error('Unexpected API response structure', response);
+          this.alertService.showAlert('error', 'Unexpected data structure');
         }
         this.isLoading = false;
       },
       error: (error) => {
-        // this.loading = true;
         console.error('Error fetching data', error);
-
         this.isLoading = false;
-      },
+        this.alertService.showAlert('error', 'No Data Found');
+      }
     });
   }
 
@@ -270,21 +301,21 @@ export class ListingPageComponent implements OnInit {
   private reviewBtnUrl = baseUrl + 'review-list' + '?size=50';
   private rejectBtnUrl = baseUrl + 'rejected' + '?size=50';
 
-  pendingBtnApi(): void {
-    this.results = [];
-    this.loading = true;
-    this.loadPendingData().subscribe(
-      (response) => {
-        console.log('API Response:', response); // Debug statement
-        this.results = response.data.content || []; // Ensure data structure is correct
-      },
-      (error) => {
-        this.loading = false;
-        this.alertService.showAlert('error', 'No Data Found');
-        console.error('Search request failed', error);
-      }
-    );
-  }
+  // pendingBtnApi(): void {
+  //   this.results = [];
+  //   this.loading = true;
+  //   this.loadPendingData().subscribe(
+  //     (response) => {
+  //       console.log('API Response:', response); // Debug statement
+  //       this.results = response.data.content || []; // Ensure data structure is correct
+  //     },
+  //     (error) => {
+  //       this.loading = false;
+  //       this.alertService.showAlert('error', 'No Data Found');
+  //       console.error('Search request failed', error);
+  //     }
+  //   );
+  // }
 
   rejectBtnApi(): void {
     // this.results = [];
@@ -327,14 +358,14 @@ export class ListingPageComponent implements OnInit {
     );
   }
 
-  private loadPendingData(): Observable<any> {
-    return this.http.get<any>(this.pendingBtnUrls).pipe(
-      catchError((error) => {
-        console.error('Pending request failed', error);
-        return of({ data: [] }); // Return an empty result on error
-      })
-    );
-  }
+  // private loadPendingData(): Observable<any> {
+  //   return this.http.get<any>(this.pendingBtnUrls).pipe(
+  //     catchError((error) => {
+  //       console.error('Pending request failed', error);
+  //       return of({ data: [] }); // Return an empty result on error
+  //     })
+  //   );
+  // }
 
   private loadReviewData(): Observable<any> {
     return this.http.get<any>(this.reviewBtnUrl).pipe(
